@@ -1,0 +1,482 @@
+{% extends "base.html" %} 
+{% load static %}
+{% load custom_filters %}
+{% block css_files %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"/> -->
+<link rel="stylesheet" href="{% static 'details_projects.css' %}" />
+<link rel="stylesheet" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+<style>
+ ::-webkit-scrollbar {
+  width: 0 !important;
+}
+  #paying-firma-add-btn{
+    padding: 0 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    font-size: 15px;
+  }
+  input[type="file"] {
+    cursor: pointer !important;
+    font: 300 14px sans-serif;
+    color:#9e9e9e;
+    width: 0px !important;
+  }
+  input[type="file"]::-webkit-file-upload-button
+  {
+    font: 300 14px  sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    border: 0;
+    padding: 12px 25px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  
+  input[type="file"]::-ms-browse {
+    font: 300 14px 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    border: 0;
+    padding: 12px 25px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+
+  /* Stilize edilmiş düğme görünümü */
+  .input-box label {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+<style>
+  .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .inputfile + label {
+      width: 49%;
+      font-size: 12px;
+      /* 20px */
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-block;
+      overflow: hidden;
+      padding: 5px 10px;
+      /* 10px 20px */
+  }
+
+
+
+  .inputfile:focus + label,
+  .inputfile.has-focus + label {
+      outline: 1px dotted #000;
+      outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  .inputfile + label svg {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      fill: currentColor;
+      margin-top: -0.25em;
+      margin-right: 0.25em;
+  }
+
+
+  .inputfile-1 + label {
+      color: #f1e5e6;
+      background: linear-gradient(135deg, #71b7e6, #191970);
+  }
+  .inputfile-2 + label {
+      color: #f1e5e6;
+      background: linear-gradient(135deg, #71b7e6, #191970);
+  }
+  #paying-firma-add-btn{
+    padding: 0 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    font-size: 15px;
+  }
+
+  .calc_btns{
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+
+
+</style>
+{% endblock %} 
+{% block title %} Sales Offer Edit {% endblock %} 
+{% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <div class="nav-bar">
+      <div class="nav-span">
+        <div class="backBtn">
+          <a href="{% url 'sales_offer' %}">
+            <button id="backBtn" class="button-project">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </a>
+          <span> </span>
+        </div>
+        <span></span>
+      </div>
+    </div>
+    <div class="center">
+      <div class="container projeBaslatContainer">
+        <div class="title">Satış Teklifini Güncelle</div>
+        <form  id="my-form" action="{% url 'sales_offer_edit' sales_offer_id=sales_offer_edit_curr.id %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="sales_form">
+
+          <div class="user-details">
+
+            <div class="input-box " id="Client_Card_Copy">
+              <span id="firma_adi_span" class="details">Firma Adı*<button type="button" id="paying-firma-add-btn" class="paying-firma-add-btn">
+                  <i class="fa-solid fa-plus"></i></button></span>
+              <div class="dropdown-container">
+                <input value="{{sales_offer_edit_curr.Client_Card_Copy}}" autocomplete= 'off' type="text" id="id_Client_Card_Copy" name="Client_Card_Copy" class="myInput" placeholder="Firma Adını Seçiniz" data-dropdown="dropdown1"/>
+              
+                <div id="dropdown1" class="dropdown-content">
+                  {% for x in client %}
+                  <span value="{{x.id}}" class="dropdown-item"
+                    >{{x.CompanyName_Clients}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          
+
+            <div class="input-box">
+              <span id="ilgilenen_kisi_span" class="details">İlgilenen Kişi*</span>
+              <div class="dropdown-container">
+                <input value="{{sales_offer_edit_curr.Person_Deal}}" type="text" id="id_Person_Deal" name="Person_Deal" class="myInput" placeholder="İlgilenen Kişi" data-dropdown="dropdown3" autocomplete="off"/>
+                <div id="dropdown3" class="dropdown-content">
+                  {% for x in workers %}
+                  <span value="{{x.id}}" class="dropdown-item"
+                    >{{x.Worker_Name}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+           
+
+            <div class="input-box">
+              <span id="konum_span" class="details">Konum*</span>
+              <div class="dropdown-container">
+                <input
+                  value="{{sales_offer_edit_curr.Location_Card}}"
+                  type="text"
+                  id="id_Location_Card"
+                  name="Location_Card"
+                  class="myInput"
+                  placeholder="Konum Seçiniz"
+                  data-dropdown="dropdown2"
+                  autocomplete="off"
+                />
+                <div id="dropdown2" class="dropdown-content">
+                  {% for x in locations %}
+                  <span value="{{x.Location}}" class="dropdown-item"
+                    >{{x.Location}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="input-box">
+              <span class="details">Teklif Bedeli - KDV Hariç ($)<button type="button" id="teklif_bedeli_btn" class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+              <input value="{{sales_offer_edit_curr.Offer_Cost_NotIncludingKDV_Card}}" class="coc-input" type="text" name="Offer_Cost_NotIncludingKDV_Card" id="id_Offer_Cost_NotIncludingKDV_Card" step="0.01" autocomplete="off" placeholder="0.00"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Birim Teklif<button type="button" id="br_tek_btn" class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+              <input value="{{sales_offer_edit_curr.UnitOffer_NotIncludingKDV}}" class="coc-input" type="text" name="UnitOffer_NotIncludingKDV" id="id_UnitOffer_NotIncludingKDV" step="0.01" autocomplete="off" placeholder="0.00"/>
+
+            </div>
+            <div class="input-box">
+              <span class="details">AC Güç (kWe)</span>
+              <input value="{{sales_offer_edit_curr.AC_Power_Card}}" class="coc-input" type="text" name="AC_Power_Card" id="id_AC_Power_Card" step="1" autocomplete="off" placeholder="0.00"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Toplam Maliyet<button type="button" id="total_mal_btn" class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+              <input value="{{sales_offer_edit_curr.Cost_NotIncludingKDV_Card}}" class="coc-input" type="text" name="Cost_NotIncludingKDV_Card" id="id_Cost_NotIncludingKDV_Card" step="1" autocomplete="off" placeholder="0.00"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Birim Maliyet - KDV Hariç ($)<button type="button" id="br_mal_btn" class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+              <input value="{{sales_offer_edit_curr.UnitCost_NotIncludingKDV}}" class="coc-input" type="text" name="UnitCost_NotIncludingKDV" id="id_UnitCost_NotIncludingKDV" step="0.01" autocomplete="off" placeholder="0.00"/>
+            </div>
+            <div class="input-box">
+              <span class="details">DC Güç (kWp)<button type="button" id="dc_guc_btn" class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+              <input value="{{sales_offer_edit_curr.DC_Power_Card}}" class="coc-input" type="text" name="DC_Power_Card" id="id_DC_Power_Card" step="1" autocomplete="off" placeholder="0.00"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Durumu</span>
+              {{sales_form.Situation_Card}}
+            </div>
+            <div class="input-box">
+              <span class="details">Yorum</span>
+              {{sales_form.Offer_Comment_Card}}
+            </div>
+            <div class="input-box">
+              <span class="details">Tarih</span>
+              <input value="{{ sales_offer_edit_curr.Date_Card|date:'Y-m-d' }}" id="tarih" type="text" name="Date_Card" placeholder="01.01.2000"/>
+            </div> 
+            <div class="input-box">
+              <span class="details">ilgili Kişi</span>
+              <input value="{{sales_offer_edit_curr.Person_Related}}" class="coc-input" type="text" name="Person_Related" id="id_Person_Related" autocomplete="off" placeholder="İlgili Kişi"/>
+            </div> 
+            <div class="input-box">
+              <span class="details">Arazi/Çatı</span>
+              {{sales_form.Terrain_Roof_Card}}
+            </div>  
+            <div style="display: block;" class="input-box">
+              <span style="display: none;" class="details arazi-span">Arazi Bedeli(MW)</span>
+              <input value="{{sales_offer_edit_curr.Roof_Cost_Card}}" style="display: none;" class="coc-input" type="text" name="Roof_Cost_Card" id="id_Roof_Cost_Card" step="1" autocomplete="off" placeholder="0.00"/>
+            </div> 
+            <div class="input-box">
+              <span class="details">Teklif Dosyası</span>
+
+              
+              <input type="file" name="Offer_File_Card" id="id_Offer_File_Card" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+              <label style="display: block;" for="id_Offer_File_Card"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                 {% if sales_offer_edit_curr.Offer_File_Card %}
+                <span>{{sales_offer_edit_curr.Offer_File_Card.name | basename }}</span>
+                {% else %}  
+                <span>Teklif 1 Dosyası seçin</span>              
+                {% endif %}
+              </label>
+            
+              <input type="file" name="Offer_File_Card_2" id="id_Offer_File_Card_2" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+              <label style="display: none;" for="id_Offer_File_Card_2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                 {% if sales_offer_edit_curr.Offer_File_Card_2 %}
+                <span>{{sales_offer_edit_curr.Offer_File_Card_2.name | basename }}</span>
+                {% else %}   
+                <span>Teklif 2 Dosyası seçin</span>             
+                {% endif %}
+                </label>
+               
+              <input type="file" name="Offer_File_Card_3" id="id_Offer_File_Card_3" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+              <label style="display: none;" for="id_Offer_File_Card_3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                 {% if sales_offer_edit_curr.Offer_File_Card_3 %}
+                <span>{{sales_offer_edit_curr.Offer_File_Card_3.name | basename }}</span>
+                {% else %}  
+                <span>Teklif 3 Dosyası seçin</span>              
+                {% endif %}
+                </label>
+               
+              <input type="file" name="Offer_File_Card_4" id="id_Offer_File_Card_4" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+              <label style="display: none;" for="id_Offer_File_Card_4"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                 {% if sales_offer_edit_curr.Offer_File_Card_4 %}
+                <span>{{sales_offer_edit_curr.Offer_File_Card_4.name | basename }}</span>
+                {% else %}    
+                <span>Teklif 4 Dosyası seçin</span>            
+                {% endif %}
+                </label>
+              
+                <input type="file" name="Offer_File_Card_5" id="id_Offer_File_Card_5" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                <label style="display: none;" for="id_Offer_File_Card_5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+                   {% if sales_offer_edit_curr.Offer_File_Card_5 %}
+                  <span>{{sales_offer_edit_curr.Offer_File_Card_5.name | basename }}</span>
+                  {% else %}   
+                  <span>Teklif 5 Dosyası seçin</span>               
+                  {% endif %}
+                </label>
+
+
+            </div>
+
+            <div class="input-box"> 
+              <span class="details">Maliyet Dosyası</span>
+
+              
+              <input type="file" name="M_File_Card" id="id_M_File_Card" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" multiple />
+              <label for="id_M_File_Card"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> 
+                {% if sales_offer_edit_curr.M_File_Card %}
+                <span>{{sales_offer_edit_curr.M_File_Card.name | basename }}</span>
+                {% else %}
+                <span>Maliyet 1 Dosyası seçin</span>
+                {% endif %}              
+              </label> 
+              
+              
+              <input type="file" name="M_File_Card_2" id="id_M_File_Card_2" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" multiple />
+              <label style="display: none;" for="id_M_File_Card_2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> 
+                {% if sales_offer_edit_curr.M_File_Card_2 %}
+                <span>{{sales_offer_edit_curr.M_File_Card_2.name | basename }}</span>
+                {% else %}
+                <span>Maliyet 2 Dosyası seçin</span>
+                {% endif %}              
+              </label> 
+
+              
+              <input type="file" name="M_File_Card_3" id="id_M_File_Card_3" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" multiple />
+              <label style="display: none;" for="id_M_File_Card_3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> 
+                {% if sales_offer_edit_curr.M_File_Card_3 %}
+                <span>{{sales_offer_edit_curr.M_File_Card_3.name | basename }}</span>
+                {% else %}
+                <span>Maliyet 3 Dosyası seçin</span>
+                {% endif %}              
+              </label> 
+
+              </div>
+          </div>
+          <div class="button">
+            <input id="project-create-btn" type="submit" value="Satış Teklifini Güncelle" />
+          </div>
+        </form>
+      </div>
+
+      <div class="window clientFirmaAddWindow">
+        <div class="container">
+          <h3 id="clientFirmaAdd-modal" class="modal-kapat">X</h3>
+          <div class="title">Firma Ekle</div>
+          <form id="firma_form" action="{% url 'project_add' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="client_form" />
+
+            <div class="user-details">
+              <div class="input-box" name="CompanyName_Clients">
+                <span id="firma_add_label" class="details">Firma Adı*</span>
+                {{ client_form.CompanyName_Clients }}
+              </div>
+            </div>
+            <div class="button">
+              <input id="firma_add_btn" type="submit" value="Kaydet" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block js_files %} 
+  <script src="{% static 'functions.js' %}"></script> 
+  <script src="{% static 'sales_offer_edit.js' %}"></script> 
+
+ 
+  <!-- Select File -->
+<script>
+    'use strict';
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        var inputs = document.querySelectorAll('.inputfile-1');
+    
+        Array.prototype.forEach.call(inputs, function (input, index) {
+            var label = input.nextElementSibling;
+            var nextLabel = inputs[index + 1] ? inputs[index + 1].nextElementSibling : null;
+    
+            input.addEventListener('change', function () {
+                if (index < inputs.length - 1 && nextLabel) {
+                    nextLabel.style.display = 'inline-block';
+                    inputs[index + 1].style.display = 'inline-block';
+                }
+            });
+    
+            input.addEventListener('change', function (e) {
+                var label = input.nextElementSibling,
+                    labelVal = label.innerHTML;
+    
+                var fileName = '';
+                if (input.files && input.files.length > 1)
+                    fileName = (input.getAttribute('data-multiple-caption') || '').replace('{count}', input.files.length);
+                else
+                    fileName = e.target.value.split('\\').pop();
+    
+                if (fileName) {
+                    label.querySelector('span').innerHTML = fileName;
+                } else {
+                    var defaultText = 'Teklif&nbsp;' + (index + 1) + ' Dosyası seçin'; // Özel metni oluştur
+                    label.querySelector('span').innerHTML = defaultText; // Etiketi güncelle   Teklif 1 Dosyası
+                }
+            });
+    
+            // Check if the input initially has a file selected
+            if (input.files && input.files.length > 0 && nextLabel) {
+                nextLabel.style.display = 'inline-block';
+                //inputs[index + 1].style.display = 'inline-block';
+            } else {
+                // Sayfa yüklendiğinde dosya adı varsa ve farklıysa labelı görünür yap
+                var defaultText = 'Teklif ' + (index + 1) + ' Dosyası seçin';
+                var fileName = label.querySelector('span').textContent;
+                if (fileName !== defaultText) {
+                    label.style.display = 'inline-block';
+                    nextLabel.style.display = 'inline-block';
+                }
+            }
+        });
+    });
+    
+</script>
+<script>
+      'use strict';
+      
+      document.addEventListener('DOMContentLoaded', function () {
+          var inputs = document.querySelectorAll('.inputfile-2');
+      
+          Array.prototype.forEach.call(inputs, function (input, index) {
+              var label = input.nextElementSibling;
+              var nextLabel = inputs[index + 1] ? inputs[index + 1].nextElementSibling : null;
+      
+              input.addEventListener('change', function () {
+                  if (index < inputs.length - 1 && nextLabel) {
+                      nextLabel.style.display = 'inline-block';
+                      inputs[index + 1].style.display = 'inline-block';
+                  }
+              });
+      
+              input.addEventListener('change', function (e) {
+                  var label = input.nextElementSibling,
+                      labelVal = label.innerHTML;
+      
+                  var fileName = '';
+                  if (input.files && input.files.length > 1)
+                      fileName = (input.getAttribute('data-multiple-caption') || '').replace('{count}', input.files.length);
+                  else
+                      fileName = e.target.value.split('\\').pop();
+      
+                  if (fileName) {
+                    label.querySelector('span').innerHTML = fileName;
+                } else {
+                    var defaultText = 'Maliyet ' + (index + 1) + ' Dosyası seçin'; // Özel metni oluştur
+                    label.querySelector('span').innerHTML = defaultText; // Etiketi güncelle   M1 Dosyası seçin
+                }
+              });
+      
+              // Check if the input initially has a file selected
+              if (input.files && input.files.length > 0 && nextLabel) {
+                nextLabel.style.display = 'inline-block';
+                inputs[index + 1].style.display = 'inline-block';
+            } else {
+                // Sayfa yüklendiğinde dosya adı varsa ve farklıysa labelı görünür yap
+                var defaultText = 'Maliyet ' + (index + 1) + ' Dosyası seçin';
+                var fileName = label.querySelector('span').textContent;
+                if (fileName !== defaultText) {
+                    label.style.display = 'inline-block';
+                    nextLabel.style.display = 'inline-block';
+                }
+            }
+          });
+      });
+      
+</script>
+
+  {% endblock %} 

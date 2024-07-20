@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+    {% load static %}
+
+    {% block css_files %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'all_style.css' %}">
+    <link rel="stylesheet" href="{% static 'details_projects.css' %}">
+    <link rel="stylesheet" href="{% static 'center.css' %}">
+    <link rel="stylesheet" href="{% static 'new_selections.css' %}">
+    <link rel="stylesheet" href="{% static 'sec-inputs.css' %}">
+    
+<style>
+  ::-webkit-scrollbar {
+  width: 0 !important;
+}
+</style>
+   
+
+    {% endblock %}
+    
+    {% block title %} Project Edeit {% endblock %}
+    {% block content %} 
+<div class="body-div">
+    {% include 'partials/_left_nav_bar.html' %}
+<div class="right-menu">
+    <div class="nav-bar">
+        <div class="nav-span">
+            <div class="backBtn">
+                <a href="{% url 'projects' %}">
+                    <button id="backBtn" class="button-project">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </a>
+                <span>
+                    </span>
+            </div>
+            <div class="span-box"><span>{{project_edit.ProjectName}}</span></div>
+            <span></span>
+        </div>
+    </div>
+<div class="center">
+    <div class="container projeBaslatContainer">
+      <div class="title">Proje Güncelleme</div>
+      <form id="my-form" action="{% url 'project_edit' project_name=project_edit.ProjectName %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="edit_form">
+        <div class="user-details">
+              <div style="display:none;" class="input-box">
+                <span class="details">Proje Adı</span>
+                {{ edit_form.ProjectName }}
+              </div>
+              <div style="display:none;" class="input-box">
+                <span class="details">Proje Kodu</span>
+                {{ edit_form.ProjectCode }}
+              </div>
+
+              <div class="input-box {% if form.CompanyName.errors %}error{% endif %}" id="CompanyNameInput">
+                <span id="firma_adi_span" class="details">Firma Adı*</span>
+                <div class="dropdown-container">
+                  <input autocomplete="off" value="{{project_edit.CompanyName}}" type="text" id="id_CompanyName" name="CompanyName" class="myInput" placeholder="Firma Adını Seçiniz" data-dropdown="dropdown1">
+                  
+                  <div id="dropdown1" class="dropdown-content">
+                      {% for x in client %}
+                          <span value="{{x.id}}" class="dropdown-item">{{x.CompanyName_Clients}}</span>
+                      {% endfor %}
+                </div>
+              </div>
+               </div>
+
+              <div class="input-box">
+                  <span class="details">İşi Üstlenen Firma*</span>
+                  <select name="CompanyUndertakingWork" id="id_CompanyUndertakingWork">
+                    {% for x in my_company %}
+                      {% if project_edit.CompanyUndertakingWork == x.MyCompanyName  %}
+                        <option value="{{x.id}}">{{x.MyCompanyName}}</option>
+                      {% endif %}
+                    {% endfor %}
+                    {% for x in my_company %}
+                      {% if project_edit.CompanyUndertakingWork != x.MyCompanyName  %}
+                        <option value="{{x.id}}">{{x.MyCompanyName}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+              </div>
+
+            <div class="input-box">
+              <span id="konum_span" class="details">Konum*</span>
+               <div class="dropdown-container">
+              <input autocomplete="off" value="{{project_edit.Location}}" type="text" id="id_Location" name="Location" class="myInput" placeholder="Konum Seçiniz" data-dropdown="dropdown2">
+                  <div id="dropdown2" class="dropdown-content">
+              {% for x in locations %}
+                  <span value="{{x.Location}}" class="dropdown-item">{{x.Location}}</span>
+              {% endfor %}
+                  </div>
+              </div>
+          </div>
+
+              <div class="input-box">
+                  <span class="details">İş Bedeli - KDV Hariç ($)</span>
+                  <input autocomplete="off" class="coc-input" type="text" name="Cost_NotIncludingKDV" id="id_Cost_NotIncludingKDV" step="0.0001" value="{{project_edit.Cost_NotIncludingKDV}}">
+
+              </div>
+              <div class="input-box">
+                  <span class="details">AC Güç (kWe)</span>
+
+                  <input autocomplete="off" class="coc-input" type="text" name="AC_Power" id="id_AC_Power" step="1" value="{{project_edit.AC_Power}}">
+
+              </div>
+              <div class="input-box">
+                  <span class="details">DC Güç (kWp)</span>
+                  <input autocomplete="off" class="coc-input" type="text" name="DC_Power" id="id_DC_Power" step="1" value="{{project_edit.DC_Power}}">
+
+              </div>
+              <div class="input-box">
+                  <span class="details">Hesaplanan Maliyet - KDV Hariç ($)</span>
+                  <input autocomplete="off" class="coc-input" type="text" name="CalculatedCost_NotIncludingKDV" id="id_CalculatedCost_NotIncludingKDV" step="0.0001" value="{{project_edit.CalculatedCost_NotIncludingKDV}}">
+              </div>
+            
+              <div class="input-box" name="StartDate">
+                <span class="details">Başlama Tarihi</span>
+                <input id="id_StartDate" type="text" name="StartDate" value="{{ project_edit.StartDate|date:'Y-m-d' }}" maxlength="10"/>
+            </div>
+            
+            <div class="input-box">
+              <span class="details">Bitirme Tarihi</span>
+              <input id="id_FinishDate" type="text" name="FinishDate" value="{{ project_edit.FinishDate|date:'Y-m-d' }}" maxlength="10"/>
+            </div>
+            <div class="input-box">
+              <span class="details">KDV Oranı (%)</span>
+              {{edit_form.KDV_Rate}}
+            </div>
+            <div class="input-box">
+              <span class="details">Arazi-Çatı</span>
+              <select name="Terrain_Roof" id="id_Terrain_Roof">
+                {% for x in terrain_roof %}
+                  {% if project_edit.Terrain_Roof == x.Terrain_Roof  %}
+                    <option value="{{x.id}}">{{x.Terrain_Roof}}</option>
+                  {% endif %}
+                {% endfor %}
+                {% for x in terrain_roof %}
+                  {% if project_edit.Terrain_Roof != x.Terrain_Roof  %}
+                    <option value="{{x.id}}">{{x.Terrain_Roof}}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+          </div>
+          <div class="input-box">
+            <span class="details">Durum</span>
+            <select name="Situation" id="id_Situation">
+              {% for x in situations %}
+                {% if project_edit.Situation == x.Situation  %}
+                  <option value="{{x.id}}">{{x.Situation}}</option>
+                {% endif %}
+              {% endfor %}
+              {% for x in situations %}
+                {% if project_edit.Situation != x.Situation  %}
+                  <option value="{{x.id}}">{{x.Situation}}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+        </div>
+            <div class="input-box">
+              <span class="details">Teşvikli (Evet/Hayır)</span>           
+              {{edit_form.Incentive}}
+            </div>
+            </div>
+            <div class="button">
+            <input id="project-create-btn" type="submit" value="Güncelle" />
+            </div>
+          
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+  {% block js_files %}  
+
+  <script src="{% static 'functions.js' %}"></script>
+  <script src="{% static 'project_edit.js' %}"></script> 
+  
+  {% endblock %}
+

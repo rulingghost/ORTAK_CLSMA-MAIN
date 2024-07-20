@@ -1,0 +1,1 @@
+ekleme sayfalarında firma seçince id seceçeneği kalıcı oluyo boşluğa tıklayıp inputu boşaltsakta data id kalıyo orda

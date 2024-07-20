@@ -1,0 +1,214 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"/> -->
+<link rel="stylesheet" href="{% static 'details_projects.css' %}" />
+<link rel="stylesheet" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'projects_styles.css' %}" />
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+<style>
+  #id_Offer_Comment_Card{
+  }
+  input[type="file"] {
+    cursor: pointer !Important;
+    font: 300 14px sans-serif;
+    color:#9e9e9e;
+  }
+  input[type="file"]::-webkit-file-upload-button
+  {
+    font: 300 14px  sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    border: 0;
+    padding: 12px 25px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  
+  input[type="file"]::-ms-browse {
+    font: 300 14px 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    border: 0;
+    padding: 12px 25px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+/* Stilize edilmiş düğme görünümü */
+label {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+</style>
+{% endblock %} {% block title %} Sales Offer Detail {% endblock %} {% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <div class="nav-bar">
+      <div class="nav-span">
+        <div class="backBtn">
+          <a href="{% url 'sales_offer' %}">
+            <button id="backBtn" class="button-project">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </a>
+          <span> </span>
+        </div>
+        <span></span>
+      </div>
+    </div>
+    <div class="center">
+      <div class="container projeBaslatContainer">
+        <div class="title">Satış Teklifi detay</div>
+        <h2>{{ sales_offer_card.Offer_Subject_Card }}</h2>
+    <p>Upload Date: {{ sales_offer_card.Offer_File_Card.upload_date }}</p>
+<!-- sales_offer_detail.html -->
+<!-- sales_offer_detail.html -->
+
+
+       
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block js_files %} 
+  <!-- <script src="{% static 'project_add.js' %}"></script>  -->
+
+  <!--   Elements    -->
+  <script>
+    let isBedeliInput = document.querySelector("#id_Cost_NotIncludingKDV_Card");
+    let birimBasiMaliyetInput = document.querySelector("#id_UnitCost_NotIncludingKDV");
+    let acGucInput = document.querySelector("#id_AC_Power_Card");
+    let dcGucInput = document.querySelector("#id_DC_Power_Card");
+
+    var amountInputReformatBtn = document.querySelector("#project-create-btn");
+    var form = document.querySelector("#my-form");
+  </script>
+
+  <script>
+    // Firma Add button
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var firmaAddBtn = document.getElementById("paying-firma-add-btn");
+      var clientFirmaAddWindow = document.querySelector(
+        ".clientFirmaAddWindow"
+      );
+
+      firmaAddBtn.addEventListener("click", function () {
+        clientFirmaAddWindow.style.display = "flex";
+      });
+
+      var clientFirmaAddModal = document.getElementById("clientFirmaAdd-modal");
+      clientFirmaAddModal.addEventListener("click", function () {
+        clientFirmaAddWindow.style.display = "none";
+      });
+    });
+    // Drop Boxes
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const inputs = document.querySelectorAll(".myInput");
+    
+      inputs.forEach((input) => {
+        const dropdownId = input.getAttribute("data-dropdown");
+        const dropdown = document.getElementById(dropdownId);
+        const dropdownItems = dropdown.querySelectorAll(".dropdown-item");
+    
+        input.addEventListener("focus", function () {
+          dropdown.classList.add("show");
+        });
+    
+        input.addEventListener("blur", function () {
+          setTimeout(() => {
+            dropdown.classList.remove("show");
+          }, 200);
+        });
+    
+        input.addEventListener("input", function () {
+          const filterText = input.value.toLowerCase();
+    
+          dropdownItems.forEach((item) => {
+            const itemText = item.textContent.toLowerCase();
+            if (itemText.startsWith(filterText)) {
+              item.style.display = "block";
+            } else {
+              item.style.display = "none";
+            }
+          });
+        });
+    
+        dropdownItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            const selectedClientId = this.getAttribute("value"); // Seçilen müşterinin ID'sini al
+            input.value = this.textContent; // Sadece text content'i inputa ata
+            input.setAttribute("data-selected-client-id", selectedClientId); // ID'yi bir data attribute olarak sakla
+    
+            dropdown.classList.remove("show");
+          });
+        });
+      });
+    });
+    
+
+    // Noktalamalar
+ 
+    runEventListeners(isBedeliInput);
+    runEventListeners(birimBasiMaliyetInput);
+    runEventListeners(acGucInput);
+    runEventListeners(dcGucInput);
+
+    function runEventListeners(input) {
+      input.addEventListener("input", function (event) {
+        var inputValue = event.target.value;
+        var clearValue = clear(inputValue);
+        var formatValue = format(clearValue);
+        input.value = formatValue;
+        deger = formatValue;
+      });
+    }
+    function clear(value) {
+      
+      if (value != undefined) {
+        var cleanString = value.replace(/[^0-9.]/g, "");
+        return cleanString;
+      } else {
+        var cleanString = 0;
+        return cleanString;
+      }
+    }
+
+    function format(number) {
+      var indexOfDot = number.indexOf(".");
+
+      if (indexOfDot !== -1) {
+        var integerPart = number
+          .slice(0, indexOfDot)
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var decimalPart = number.slice(indexOfDot + 1);
+        return integerPart + "." + decimalPart;
+      } else {
+        var formattedNumber = number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return formattedNumber;
+      }
+    }
+
+                    // Form Gönderme
+        
+    amountInputReformatBtn.addEventListener("click", function(event) {
+      event.preventDefault();
+      isBedeliInput.value = clear(isBedeliInput.value);
+      birimBasiMaliyetInput.value = clear(birimBasiMaliyetInput.value);
+      acGucInput.value = clear(acGucInput.value);
+      dcGucInput.value = clear(dcGucInput.value);
+      form.submit();
+    });                  
+  </script>
+
+
+  {% endblock %} 
+</div>

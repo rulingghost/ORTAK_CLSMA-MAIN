@@ -1,0 +1,166 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"/> -->
+<link rel="stylesheet" href="{% static 'details_projects.css' %}" />
+<link rel="stylesheet" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+
+<style>
+  #paying-firma-add-btn{
+    padding: 0 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    font-size: 15px;
+  }
+</style>
+<style>
+  .inventor_tables{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .projeBaslatContainer{
+    background-color: 	#f2f2f2;
+  }
+  .inventor_tables table{
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+    border-collapse: collapse;
+  }
+  .inventor_tables th{
+    line-height: 30px;
+    background: #b1b1b1;
+    font-size: 15px;
+    padding: 5px 10px;
+    border: 1px solid #000;
+  }
+  .center{
+    background: 	#f2f2f2;
+  }
+  .inventor_tables td{
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid #000;
+  }
+  .inventor_tables td:nth-child(6),
+  .inventor_tables th:nth-child(6){
+    border: none;
+    background: transparent;
+  }
+  .inventor_tables td:nth-child(7) select{
+    font-weight: 600;
+    background: 	#f2f2f2;
+    padding: 0;
+  }
+  .inventor_tables input{
+    font-weight: 600;
+    background: 	#f2f2f2;
+    font-size: 14px;
+    text-align: center;
+    width: 100px;
+    border: none;
+    outline: none;
+  }
+  .inventor_tables select{
+    text-align: center;
+    font-size: 14px;
+    width: 100px;
+    border: none;
+    height: 25px;
+    -webkit-appearance: none;
+    -moz-appearance: none; 
+    appearance: none;
+  }
+  .inventor_tables option{
+    text-align: center;
+    font-size: 14px;
+  }
+</style>
+
+{% endblock %} {% block title %} Project Add {% endblock %} {% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <div class="nav-bar">
+      <div class="nav-span">
+        <div class="backBtn">
+          <a href="{% url 'operation_care_detail' operation_care_id=operation_care.id %}">
+            <button id="backBtn" class="button-project">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </a>
+          <span> </span>
+        </div>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="container projeBaslatContainer">
+        <div class="title">İnventor Ekle</div>
+        <form id="my-form" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="form" />
+
+          <div class="inventor_tables">
+            <div class="left">
+                <table>
+                    <thead>
+                        <tr>
+                          <th>STRG NU</th>
+                          <th>PNL GÜCÜ</th>
+                          <th>VOC</th>
+                          <th>PNL MRK</th>
+                          <th>PNL SY</th>
+                          <th>   </th>
+                          <th>İZALASYON</th>
+                          <th>TOPLAM V</th>
+                          <th>+</th>
+                          <th>-</th>
+                        </tr>
+                    </thead>
+                    <tbody class="inventor_table_body">
+                       
+                    </tbody>
+                </table>
+            </div>
+            
+          </div>
+          <div class="button">
+            <input id="project-create-btn" type="submit" value="Proje Ekle" />
+          </div>
+        </form>
+      </div>
+
+      <div class="window clientFirmaAddWindow">
+        <div id="firma_container" class="container">
+          <h3 id="clientFirmaAdd-modal" class="modal-kapat">X</h3>
+          <div class="title">Firma Ekle</div>
+          <form id="firma_form"  method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="client_form" />
+
+            <div class="user-details">
+              <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+                <span id="firma_add_label" class="details">Firma Adı*</span>
+                {{ client_form.CompanyName_Clients }}
+              </div>
+            </div>
+            <div class="button">
+              <input id="firma_add_btn" type="submit" value="Kaydet" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block js_files %}
+  <script src="{% static 'functions.js' %}"></script> 
+  <script src="{% static 'inventor.js' %}"></script> 
+  {% endblock %} 
+</div>

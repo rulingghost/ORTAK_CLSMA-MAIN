@@ -1,0 +1,42 @@
+----------Projeler------------
+*Ac Dc güce birim eklenecek
+*Proje başlatta mevcut bir firma adı girdiğimizde hata vermiyo (şehir de aynı şekilde)
+->firma ekleme aynı şekilde
+->firma ekle daralacak kırmızı hata eklenecek
+
+*(yapılan iş)+(yapılan ödeme)+(gelir)=firma ekle (+) css
+->mevcut firmayı tekrar ekleme
+->olmayan firma seçme
+
+*Yapılan iş cinsi selection
+*Yapılan iş dolar kuru noktalama
+
+*İŞ BEDELİ tablosu düzenlenecek bi bak oraya tek tek yazmayım
+
+*Gerçekleşen Maliyet/Yapılan iş buton çalışmıyor başlatmıyo yani
+*hee birde burda direk maliyet girince biryerde kur çekiyo ama tarihi girince tekrar düzeltiyo sorun yok 
+
+*Toplam Maliyet tablosu baya bozuk orayada bir bak
+
+----------Müşteri---------------
+*Müşteri sayfasında yeni müşteri ekliyoruz ya . oraya mevcut bir müşteri eklediğimde eklemiş
+gibi orası kapanıyor tabiki eklemiyo, sonrasında tekrar eklemeye çalıştığında ekranlar silinmemiş
+oluyor ve hata gitmiyor.
+
+->muhtemel tedareikçide aynı
+->evet aynı
+
+->oraya bi hata ekleyelim
+
+*buralarda da şehiri olmayan bir şehiri direk yazabiliyoruz ve alıyor. onu da direk selectionlarda seçilebilir yapalım
+
+----------Satış Teklif------------
+
+*Menü açılınca amına gayıyo bozuyo bah ona (hani hamburger menü var ya o )(malsın ya açıklama yaptım)
+*Satış sürecindeki search bar çalışmıyo onları veri olarak görmüyor herhalde pek de önemli değil zor olursa uğraşma
+*Firma Ekle (+) bozuk
+*Aynı Firma 2 Kez ekleniyor
+*Olmayan bir firma veya bir konum eklediğimizde yeni kart oluşturuyo
+*Herhangi bir sayfada (lise bekleyen iş bla bla bla) bir işlem yaptuığımda geri aldığımda felan satış sürecine atıyopr direk
+*listeye renklendirme yapalım
+*Satış teklifinde güncelleme aldığımda veri güncelleniyor ama kartlarda eski veri kalıyo

@@ -1,0 +1,168 @@
+{% load static %}
+
+{% block css_files %} 
+<link rel="stylesheet" href="{% static 'left_menu.css' %}" />
+{% endblock %}
+
+<div class="left-menu">
+    <nav id="left-menu-nav">
+      <div class="sidebar-top">
+        <span class="shrink-btn">
+          <i class="bx bx-chevron-left"></i>
+        </span>        
+        <a style="text-align: center;" href="{% url 'home' %}"><img src="{% static 'images/newLogo.png' %}" class="logo" alt="" /></a>
+      </div>
+
+      <div class="searchForNav">
+        <i class="bx bx-search"></i>
+        <input type="text" class="hide-for-menu" placeholder="Ara..." />
+      </div>
+
+      <div class="sidebar-links">
+        <ul>
+          <div class="active-tab"></div>
+          <li class="tooltip-element anasayfa_li" data-tooltip="0">
+            <a href="{% url 'home' %}" class="active" data-active="0">
+              <div class="icon">
+                <i class="fas fa-home"></i>
+              </div>
+              <span class="link hide-for-menu">Anasayfa</span>
+            </a>
+          </li>
+          {% if 'admin' in user_groups|lower or 'proje grubu' in user_groups|lower %}
+          <li class="tooltip-element projeler_li" data-tooltip="1">
+              <a href="{% url 'projects' %}" data-active="1">
+                  <div class="icon">
+                      <i class="fas fa-project-diagram"></i>
+                  </div>
+                  <span class="link hide-for-menu">Projeler</span>
+              </a>
+          </li>
+          {% endif %}
+
+          {% if 'admin' in user_groups|lower or 'proje grubu' in user_groups|lower %}
+
+          <li class="tooltip-element musteriler_li" data-tooltip="2">
+            <a href="{% url 'client' %}" data-active="2">
+              <div class="icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <span class="link hide-for-menu">Müşteri</span>
+            </a>
+          </li>
+          {% endif %}
+          
+          {% if 'admin' in user_groups|lower or 'proje grubu' in user_groups|lower %}
+
+          <li class="tooltip-element tedarikciler_li" data-tooltip="3">
+            <a href="{% url 'supplier' %}" data-active="3">
+              <div class="icon">
+                <i class="fas fa-truck"></i>
+              </div>
+              <span class="link hide-for-menu">Tedarikçi</span>
+            </a>
+          </li>
+          {% endif %}
+
+          {% if 'admin' in user_groups|lower or 'satış grubu' in user_groups|lower %}
+
+          <li class="tooltip-element satis_teklif_li" data-tooltip="3">
+            <a href="{% url 'sales_offer' %}" data-active="4">
+              <div class="icon">
+                <i class="fas fa-wallet"></i>
+              </div>
+              <span class="link hide-for-menu">Satış Teklif</span>
+            </a>
+          </li>
+          {% endif %}
+
+          {% if 'admin' in user_groups|lower or 'stok grubu' in user_groups|lower %}
+
+          <li class="tooltip-element stok_li" data-tooltip="3">
+            <a href="#" data-active="5">
+              <div class="icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <span class="link hide-for-menu">Stok</span>
+            </a>
+          </li>
+          {% endif %} 
+
+          {% if 'admin' in user_groups|lower or 'bakım grubu' in user_groups|lower %}
+
+          <li class="tooltip-element isletme_bakim_li" data-tooltip="3">
+            <a href="{% url 'operation_care' %}" data-active="6">
+              <div class="icon">
+                <i class="fas fa-wrench"></i>
+              </div>
+              <span class="link hide-for-menu">İşletme Bakım</span>
+            </a>
+          </li>
+          {% endif %}
+
+          {% if 'admin' in user_groups|lower or 'rapor grubu' in user_groups|lower %}
+          <li class="tooltip-element raporlama_li" data-tooltip="3">
+            <a href="{% url 'report' %}" data-active="7">
+              <div class="icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <span class="link hide-for-menu">Raporlama</span>
+            </a>
+          </li>
+          {% endif %}
+
+          {% if 'admin' in user_groups|lower or 'rapor grubu' in user_groups|lower %}
+          <li class="tooltip-element calendar_li" data-tooltip="3">
+            <a href="{% url 'calendar' %}" data-active="7">
+              <div class="icon">
+                <i class="fa-solid fa-calendar-days"></i>
+              </div>
+              <span class="link hide-for-menu">Takvim</span>
+            </a>
+          </li>
+          {% endif %}
+
+
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#" class="account tooltip-element" data-tooltip="0">
+          <i class="bx bx-user"></i>
+        </a>
+        <div class="admin-user tooltip-element" data-tooltip="1">
+          <div class="admin-profile hide-for-menu">
+            <i class="fa-regular fa-user"></i>
+            <div class="admin-info">
+              <h3>{{user}}</h3>
+              
+                {% if user_groups %}
+
+                  {% for group in user_groups %}
+                  <h5> {{ group.name }} </h5>{% if not forloop.last %} {% endif %} 
+                  {% endfor %}
+            
+              {% endif %}
+            </div>
+          </div>
+          <a href="{% url 'logout' %}" class="log-out">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+{% block js_files %} 
+
+<script>
+    var homeUrl = "{% url 'home' %}";
+    var projectsUrl = "{% url 'projects' %}";
+    var clientUrl = "{% url 'client' %}";
+    var supplierUrl = "{% url 'supplier' %}";
+    var sales_offerUrl = "{% url 'sales_offer' %}";
+    var operation_careUrl = "{% url 'operation_care' %}";
+    var reportUrl = "{% url 'report' %}";
+
+</script>
+
+{% endblock %}

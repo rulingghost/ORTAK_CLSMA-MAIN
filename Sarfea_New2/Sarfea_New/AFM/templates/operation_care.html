@@ -1,0 +1,504 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_files %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'projects.css' %}">
+<link rel="stylesheet" href="{% static 'dist/mc-calendar.min.css' %}" />
+<style>
+   :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+  #table thead th:not(:nth-child(2)),
+  #table tbody td:not(:nth-child(2)) {
+    text-align: center;
+  }
+
+  .lists {
+    overflow-y: scroll;
+  }
+
+  table thead th {
+    text-align: center;
+  }
+
+  .active-tab {
+    top: 350.5px !important;
+  }
+
+  /*  Top Menu UL  */
+  .top-menu-ul {
+    display: flex;
+    list-style-type: none;
+  }
+
+  .top-menu-ul li {
+    position: relative;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+  }
+
+  .top-menu-ul li::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 2px;
+    background-color: #000;
+    transition: width 0.3s ease;
+  }
+
+  .top-menu-ul li:hover::before {
+    width: 100%;
+  }
+
+  .top-menu-ul .li-hover::before {
+    width: 100%;
+  }
+  #file_label{    
+    text-align: center;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 13px 10px;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+}
+.inputfile+label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    margin-right: 0.25em;
+}
+#fatura_table tbody tr td:first-child, #fatura_table thead tr th:first-child{
+  text-align: left;
+  padding-left: 45px;
+}
+#fatura_table tr td:nth-child(2), #fatura_table tr th:nth-child(2) {
+    text-align: center;
+}
+#ariza_takip_table{
+  width: 2000px;
+}
+.sidebar-links li.isletme_bakim_li {
+  background: var(--main-color-dark);
+}
+.status.green {
+    background-color: #55c53ec5;
+}
+</style>
+
+{% endblock %}
+{% block title %} Operation and Care {% endblock %}
+{% block content %}
+<div class="body-div">
+  <div class="window operation-care-add-window">
+    <div class="container">
+      <h3 id="operation-care-X" class="close-window">X</h3>
+      <div class="title">İşletme Bakım Ekle</div>
+      <form id="operation_care_add_form" action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="form" />
+
+        <div class="user-details">
+
+          <div class="input-box" id="CompanyNameInput">
+            <span id="firma_adi_span" class="details">Santral İsmi*<button type="button" id="paying-company-add-btn"
+                class="paying-company-add-btn">
+                <i class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete='off' type="text" id="id_Operation_Care_Company" name="Operation_Care_Company"
+                class="myInput need_id" placeholder="Firma Adını Seçiniz" data-dropdown="sales-offer-add-dropdown1" />
+              <div id="sales-offer-add-dropdown1" class="dropdown-content client-dropdown">
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" id="ProjectNameInput">
+            <span id="proje_adi_span" class="details">İnventör Markası</span>
+            <input autocomplete='off' type="text" name="Operation_Care_Inventor_Brand" maxlength="63"
+              placeholder="Marka İsmi Giriniz" id="id_Operation_Care_Inventor_Brand" autocomplete="off">
+          </div>
+          <div class="input-box" id="ProjectCodeInput">
+            <span id="proje_kodu_span" class="details">Panel Markası</span>
+            <input type="text" name="Operation_Care_Panel_Brand" id="id_Operation_Care_Panel_Brand">
+          </div>
+          <div class="input-box">
+            <span id="konum_label" class="details">Konum</span>
+            <div class="dropdown-container">
+              <input type="text" id="id_Operation_Care_Location" name="Operation_Care_Location" class="myInput"
+                placeholder="Konum Seçiniz" data-dropdown="dropdown2" autocomplete="off" />
+              <div id="dropdown2" class="dropdown-content">
+                {% for x in locations %}
+                <span value="{{x.Location}}" class="dropdown-item">{{x.Location}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span class="details">İnventör Güç(kW)</span>
+            <input class="coc-input formatInputs" type="text" name="Operation_Care_Inventor_Power"
+              id="id_Operation_Care_Inventor_Power" step="1" autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">Panel Gücü(W)</span>
+            <input class="coc-input formatInputs" type="text" name="Operation_Care_Panel_Power"
+              id="id_Operation_Care_Panel_Power" step="1" autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">Adres</span>
+            <input class="coc-input" type="text" name="Operation_Care_Address" id="id_Operation_Care_Address"
+              autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">İnventör Adet</span>
+            <input class="coc-input" type="text" name="Operation_Care_Inventor_Number"
+              id="id_Operation_Care_Inventor_Number" step="1" autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">Panel VOC</span>
+            <input class="coc-input formatInputs" type="text" name="Operation_Care_VOC" id="id_Operation_Care_VOC"
+              step="0.1" autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">Arazi/Çatı</span>
+            <select name="Operation_Care_Terrain_Roof" id="id_Operation_Care_Terrain_Roof">
+              <option value="Arazi">Arazi</option>
+              <option value="Çatı">Çatı</option>
+            </select>
+          </div>
+          
+          <!-- <div class="input-box">
+            <span class="details">Tesis Kurulu Gücü</span>
+            <input class="formatInputs" id="id_Operation_Care_Capacity" type="text" name="Operation_Care_Capacity" />
+          </div> -->
+          <div class="input-box">
+            <span class="details">AC Güç(kWe)</span>
+            <input class="formatInputs" id="id_Operation_Care_AC_Power" type="text" name="Operation_Care_AC_Power" />
+          </div>
+          <div class="input-box">
+            <span class="details">1 İnventördeki String Sayısı</span>
+            <input id="id_Operation_Care_Number_Str" type="text" name="Operation_Care_Number_Str" />
+          </div>
+          <div class="input-box">
+            <span class="details">Şalt Malzemesi</span>
+            <input class="" id="id_Operation_Care_Switchgear_Material" type="text" name="Operation_Care_Switchgear_Material"/>
+          </div>
+
+          <div class="input-box">
+            <span class="details">DC Güç(kWp)</span>
+            <input class="formatInputs" id="id_Operation_Care_DC_Power" type="text" name="Operation_Care_DC_Power" />
+          </div>
+          <div class="input-box">
+            <span class="details">1 stringteki Panel Sayısı</span>
+            <input id="id_Operation_Care_Panel_Number_Str" type="text" name="Operation_Care_Panel_Number_Str" />
+          </div>
+          <div class="input-box">
+            <span class="details">Devreye Alınma Tarihi</span>
+            <input class="date-inputs" id="id_Operation_Care_Start_Date" type="text" name="Operation_Care_Start_Date"
+              maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">Bakım Sözleşmesi Bitiş Tarihi</span>
+            <input class="date-inputs" id="id_Operation_Care_Finish_Date" type="text" name="Operation_Care_Finish_Datee"
+              maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">Yön</span>
+            <select name="Operation_Care_Direction" id="id_Operation_Care_Direction">
+              <option value="Kuzey">Kuzey</option>
+              <option value="Güney">Güney</option>
+              <option value="Doğu">Doğu</option>
+              <option value="Batı">Batı</option>
+            </select>
+          </div>
+          
+        </div>
+        <div class="button">
+          <input id="operation-care-create-btn" type="button" value="İşletme Bakım Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window ariza-add-window">
+    <div class="container">
+      <h3 id="ariza-X" class="close-window">X</h3>
+      <div class="title">Arıza Bildir</div>
+      <form id="ariza-add-form" action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="form" />
+
+        <div class="user-details">
+
+          <div class="input-box" id="ProjectName_ExpensesInput">
+            <span id="Fail_Operation_Span" class="details">İşletme Bakım *</span>
+            <div class="dropdown-container">
+              <input autocomplete='off' type="text" id="id_Fail_Operation_Care" name="Fail_Operation_Care"
+                class="myInput need_id" placeholder="İşletme Bakım Seçiniz" data-dropdown="ariza-add-dropdown1">
+              <div id="ariza-add-dropdown1" class="dropdown-content operation-dropdown">
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="input-box" id="ProjectNameInput">
+            <span id="proje_adi_span" class="details">Santral İsmi</span>
+            <input autocomplete='off' type="text" name="Fail_Central_Name" maxlength="63"
+              placeholder="Santral İsmi Giriniz" id="id_Fail_Central_Name" autocomplete="off">
+          </div>
+          <div class="input-box" id="ProjectCodeInput">
+            <span id="proje_kodu_span" class="details">Bilgi Verilen Kişi</span>
+            <input type="text" placeholder="Bilgi Verilen Kişi Giriniz" name="Fail_Information_Person"
+              id="id_Fail_Information_Person">
+          </div>
+
+          <div class="input-box">
+            <span class="details">Arıza Tespit Tarihi</span>
+            <input class="date-inputs" type="text" placeholder="01.01.2000" name="Fail_Detection_Date" id="id_Fail_Detection_Date" maxlength="10">
+          </div>
+          <div class="input-box">
+            <span class="details">Ekip Bilgilendirme Tarihi</span>
+            <input class="date-inputs" type="text" placeholder="01.01.2000" name="Fail_Team_Info_Date" id="id_Fail_Team_Info_Date" maxlength="10">
+          </div>
+          <div class="input-box">
+            <span class="details">Arıza Onarım Tarihi</span>
+            <input class="date-inputs" type="text" placeholder="01.01.2000" name="Fail_Repair_Date" id="id_Fail_Repair_Date" maxlength="10">
+          </div>
+          <div class="input-box">
+            <span class="details">Garanti Kapsam Durumu</span>
+            <select name="Fail_Guaranteed" id="id_Fail_Guaranteed">
+              <option value="Belirsiz">Belirsiz</option>
+              <option value="Evet">Evet</option>
+              <option value="Hayır">Hayır</option>
+            </select>
+          </div>
+          <div class="input-box">
+            <span class="details">Arıza Durumu</span>
+            <select name="Fail_Situation" id="id_Fail_Situation">
+              <option value="Belirlendi">Belirlendi</option>
+              <option value="Onarımda">Onarımda</option>
+              <option value="Onarıldı">Onarıldı</option>
+            </select>
+          </div>
+          <div class="input-box medium">
+            <span class="details">Arıza Ayrıntısı</span>
+            <input name="Fail_Detail" id="id_Fail_Detail" type="text">
+          </div>
+        </div>
+        <div class="button">
+          <input id="ariza-create-btn" type="button" value="Arıza Bildir" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window ariza-fatura-add-window">
+    <div class="container">
+      <h3 id="ariza-fatura-X" class="close-window">X</h3>
+      <div class="title">Arıza Bakım Faturası</div>
+      <form id="fatura_form" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="form" />
+
+        <div class="user-details">
+
+
+
+          <div class="input-box" id="Fail_bill">
+            <span class="details">Santral İsmi</span>
+            <input autocomplete='off' type="text" name="Fail_Bill_Central_Name" maxlength="63"
+              placeholder="Santral İsmi Giriniz" id="id_Fail_Bill_Central_Name" autocomplete="off">
+          </div>
+          <div class="input-box" id="ProjectCodeInput">
+            <span class="details">Yapılan İşlem</span>
+            <input type="text" name="Fail_Bill_Process" id="id_Fail_Bill_Process" placeholder="Yapılan İşlemi Giriniz">
+          </div>
+
+          <div class="input-box">
+            <span class="details">Tarih</span>
+            <input class="date-inputs" type="text" name="Fail_Bill_Date" id="id_Fail_Bill_Date" placeholder="Tarih Giriniz">
+          </div>
+          <div class="input-box">
+            <span class="details">Fatura Belge</span>
+            <input style="display: none;" type="file" name="Fail_Bill_File" id="id_Fail_Bill_File" class="inputfile inputfile-1" />
+            <label id="file_label" for="id_Fail_Bill_File">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg>
+              <span id="fatura_file_span">Fatura Belgesi Seçin</span></label>
+          </div>
+          <div class="input-box large">
+            <span class="details">Açıklama</span>
+            <input class="coc-input" type="text" name="Fail_Bill_Detail" id="id_Fail_Bill_Detail" autocomplete="off"
+              placeholder="Açıklama Giriniz" />
+          </div>
+
+
+        </div>
+        <div class="button">
+          <input type="button" id="fatura-create-btn" value="Arıza Bakım Faturası Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window client-add-window">
+    <div style="width: 400px" id="client_container" class="container">
+      <h3 id="client-X" class="close-window clientx">X</h3>
+      <div class="title">Santral Ekle</div>
+      <form id="firma_add_form" action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="client_form" />
+
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+            <span id="firma_add_label" class="details">Santral İsmi*</span>
+            <input id="id_PowerPlantName" name="PowerPlantName" type="text" />
+          </div>
+        </div>
+        <div class="button">
+          <input id="firma_submit_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <main class="table" id="customers_table">
+      <section class="table__header">
+
+        <ul class="top-menu-ul">
+          <li id="isletme_bakim">İşletme Bakım</li>
+          <li id="ariza_takip">Arıza Takip</li>
+          <li id="fatura">Faturalar</li>
+        </ul>
+        <div class="export__file">
+          <button id="ariza_add_btn" style="margin-right: 10px;" class="button-project-start">Arıza Bildir</button>
+          <button id="operation_care_add_btn" style="width: 230px;" class="button-project-start">İşletme-Bakım
+            Başlat</button>
+        </div>
+      </section>
+      <section class="table__body">
+        <table id="isletme_bakim_table">
+          <thead>
+            <tr>
+              <th><span></span></th>
+              <th>Firma Adı<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Tesis Kurulu Gücü<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Bakım Ücreti<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Arıza Durumu<span class="icon-arrow">&UpArrow;</span></th>
+              <th class="first_sorting_element">Sonraki Bakım Tarihi<span class="icon-arrow">&UpArrow;</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for operation in operations %}
+            <tr>
+              <td>
+               
+                  <i id="edit-text" class="fa-solid fa-pen-to-square"></i>
+                
+              </td>
+              <td><a
+                  href="{% url 'operation_care_detail' operation_care_id=operation.id %}">{{operation.Operation_Care_Company}}</a>
+              </td>
+              <td>{{operation.Operation_Care_Inventor_Power}}</td>
+              <td>{{operation.Operation_Care_Location}}</td>
+              <td>{{operation.Operation_Care_Cost}}</td>
+              <td>{{operation.Operation_Care_Fail_Number}}</td>
+              {% if operation.Operation_Care_Fail_Number == 0 %}
+              <td><span class="status">{{operation.Operation_Care_Finish_Date}}</span></td>
+              {% else %}
+              <td><span class="status">{{operation.Operation_Care_Finish_Date}}</span></td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <table id="fatura_table" style="display: none;">
+          <thead>
+            <th style="width: 20%;"><span>Santral İsmi</span></th>
+            <th style="width: 20%;"><span>Yapılan İşlem</span></th>
+            <th style="width: 20%;"><span>Açıklama</span></th>
+            <th style="width: 20%;"><span>Tarih</span></th>
+            <th style="width: 20%;"><span>Dosya</span></th>
+          </thead>
+          <tbody>
+            {% for bill in fail_bills %}
+
+            <tr>
+              <td>{{bill.Fail_Bill_Central_Name}}</td>
+              <td>{{bill.Fail_Bill_Process}}</td>
+              <td>{{bill.Fail_Bill_Detail}}</td>
+              <td>{{bill.Fail_Bill_Date}}</td>
+              <td>
+                {% if bill.Fail_Bill_File %}
+                <button class="mr-3 blue" onclick="openFile('{{ bill.Fail_Bill_File.url }}')">Faturayı Aç</button>
+                {% else %}
+                Faruta Bulunamadı
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <table id="ariza_takip_table" style="display: none;">
+          <thead>
+            <th><span></span></th>
+            <th>Arıza Durumu<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Santral İsmi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arıza Tespit Tarihi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arıza<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Ekip Bilgilendirme Tarihi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Bilgi Verilen Kişi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arıza Onarım Tarihi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Garanti Kapsam Durumu<span class="icon-arrow">&UpArrow;</span></th>            
+          </thead>
+          <tbody>
+            {% for fail in fails %}
+            <tr>
+              <td><a href="{% url 'fail_edit' fail_id=fail.id %}"><i id="edit-text"
+                    class="fa-solid fa-pen-to-square"></i></a></td>
+              <td>{{fail.Fail_Central_Name}}</td>
+              <td>{{fail.Fail_Detection_Date}}</td>
+              <td>{{fail.Fail_Detail}}</td>
+              <td>{{fail.Fail_Team_Info_Date}}</td>
+              <td>{{fail.Fail_Information_Person}}</td>
+              <td>{{fail.Fail_Repair_Date}}</td>
+              <td>{{fail.Fail_Guaranteed}}</td>
+              <td>{{fail.Fail_Situation}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</div>
+{% endblock %}
+
+{% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'operation_care.js' %}"></script>
+
+{% endblock %}

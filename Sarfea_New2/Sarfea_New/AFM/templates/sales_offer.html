@@ -1,0 +1,1359 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_files %}
+<!-- <link rel="stylesheet" href="{% static 'sales_offer_navrss.css' %}"> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'sales_offers.css' %}">
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>
+  :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+</style>
+<style>
+  input[type="file"] {
+    cursor: pointer !important;
+    font: 300 14px sans-serif;
+    color: #9e9e9e;
+    width: 0px !important;
+  }
+
+  input[type="file"]::-webkit-file-upload-button {
+    font: 300 14px sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    border: 0;
+    padding: 12px 25px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  input[type="file"]::-ms-browse {
+    font: 300 14px 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    border: 0;
+    padding: 12px 25px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  /* Stilize edilmiş düğme görünümü */
+  .input-box label {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+<style>
+  .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .inputfile+label {
+    width: 49%;
+    font-size: 12px;
+    /* 20px */
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 5px 10px;
+    /* 10px 20px */
+  }
+
+
+
+  .inputfile:focus+label,
+  .inputfile.has-focus+label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  .inputfile+label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    margin-right: 0.25em;
+  }
+
+
+  .inputfile-1+label {
+    color: #f1e5e6;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+  }
+
+  .inputfile-2+label {
+    color: #f1e5e6;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+  }
+
+  /* .details{
+    position: absolute;
+    top: 10px;
+    left: 30%;
+  } */
+  #submit_btn {
+    position: absolute;
+    bottom: 10px;
+    left: 40%;
+  }
+
+  #file_label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+    color: #fff;
+  }
+
+
+  .file_upload {
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    color: #000;
+    position: absolute;
+
+
+    z-index: 11123123123;
+  }
+
+  .file_upload .container {
+    position: relative;
+    background-color: #fff;
+    border: 3px solid #18283b;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #clientFirmaAdd-modal {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .file_input {
+    display: none;
+  }
+
+  .file_upload #submit_btn {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 30px;
+    width: 250px;
+    outline: none;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #71b7e6, #191970);
+  }
+
+  .file_upload .details {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  #nav-bar {
+    display: none;
+  }
+
+  /*search box*/
+
+  .search {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 40px;
+    transition: 0.5s;
+    overflow: hidden;
+    margin-left: 13px;
+    margin-right: 15px;
+    font-size: 16px;
+    border: solid 1px rgba(0, 0, 0, 0.3);
+    border-radius: 40px;
+  }
+
+  .search.active {
+    width: 300px;
+  }
+
+  .search .icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    cursor: pointer;
+  }
+
+  .search .icon::before {
+    content: "";
+    position: absolute;
+    width: 7.5px;
+    height: 7.5px;
+    border: 1.5px solid #000;
+    border-radius: 50%;
+    transform: translate(-2px, -2px);
+  }
+
+  .search .icon::after {
+    content: "";
+    position: absolute;
+    width: 1.5px;
+    height: 6px;
+    background-color: #000;
+    transform: translate(3px, 3px) rotate(315deg);
+  }
+
+  .search .input {
+    position: relative;
+    width: 300px;
+    height: 40px;
+    left: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .search .input input {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    padding: 10px 0;
+  }
+
+  .clear {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    right: 12px;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .clear::before {
+    position: absolute;
+    content: "";
+    width: 1px;
+    height: 10px;
+    background: #999;
+    transform: rotate(45deg);
+  }
+
+  .clear::after {
+    position: absolute;
+    content: "";
+    width: 1px;
+    height: 10px;
+    background: #999;
+    transform: rotate(315deg);
+  }
+
+  table thead th {
+    cursor: pointer;
+    z-index: 111111;
+  }
+
+  table thead th span {
+    position: relative;
+  }
+
+  /* thead th span::after{
+   content: '';
+  position:absolute;
+  left: -18px;
+  top: 60%;
+  border-style: solid;
+  border-top-width: 10px;
+  border-right-width: 5px;
+  border-left-width: 5px;
+  border-color: #000 transparent transparent transparent;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+   } */
+  .list_firt_tr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+  }
+
+  /*---------------------*/
+
+
+  .run-job .fa-circle {
+    color: #dae457;
+  }
+
+  .wait-job .fa-circle {
+    color: #5d88ec;
+  }
+
+  .lost-job .fa-circle {
+    color: #ca0828;
+  }
+
+  .gain-job .fa-circle {
+    color: #04eb22;
+  }
+
+  td,
+  th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .top_right_box button {
+    margin-right: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    height: 100%;
+    background-color: #fff5;
+    padding: 1rem 1rem;
+    border-radius: 2rem;
+    border: none;
+    transition: 0.2s;
+  }
+
+  .calc_btns {
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 1px 8px;
+  }
+
+  .sales-offer-add-window .container .input-box {
+    margin-bottom: 15px;
+    width: calc(100% / 3 - 20px);
+
+  }
+
+  .sales-offer-add-window .container {
+    max-width: 1000px !important;
+  }
+
+  .table__body {
+    overflow: auto;
+    overflow: overlay;
+  }
+
+  .table__body::-webkit-scrollbar {
+    width: 0.5rem !important;
+    height: 0.5rem !important;
+  }
+
+  .table__body::-webkit-scrollbar-thumb {
+    border-radius: 0.5rem !important;
+    background-color: #0004 !important;
+    visibility: hidden !important;
+  }
+
+  .table__body:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+  }
+
+  .table__body a {
+    text-decoration: none;
+    color: #000;
+  }
+
+  .table__body tbody button {
+    font-weight: 700;
+    font-size: 15px;
+    /* width: 190px; */
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    border: none;
+    transition: 0.2s;
+  }
+
+  .table__body tbody button:hover {
+    background-color: #fff;
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td img {
+    width: 36px;
+    height: 36px;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+
+    vertical-align: middle;
+  }
+
+  table,
+  th,
+  td {
+    height: 71px;
+    border-collapse: collapse;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  #list_table thead th:nth-child(3){
+    position: sticky;
+    top: 0;
+    left: -1px;
+  }
+  #list_table tbody td:nth-child(3){
+    position: sticky;
+    left: -1px;
+    z-index: 1000000;
+  } 
+  #sales_table thead th:nth-child(2), #lost_table thead th:nth-child(2), #won_table thead th:nth-child(2){
+    position: sticky;
+    top: 0;
+    left: -1px;
+  }
+  #sales_table tbody td:nth-child(2), #lost_table tbody td:nth-child(2), #won_table tbody td:nth-child(2){
+    position: sticky;
+    left: -1px;
+  } 
+
+
+
+
+
+
+
+
+  thead th {    
+    background-color: #d5d1defe;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+  tbody tr:nth-child(odd) td{
+    background-color: #efefef;
+  }
+  tbody tr:nth-child(even) td{
+    background-color: #d8d8d8;
+  }
+
+  tbody tr:nth-child(odd) {
+    background-color: #efefef;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #d8d8d8;
+  }
+
+  thead th:nth-child(2) {
+    text-align: left;
+  }
+
+  tbody tr td:first-child {
+    padding: 0;
+    padding-left: 10px;
+  }
+
+  tbody tr td:nth-child(2) {
+    text-align: left;
+  }
+
+  tbody tr.hide {
+    opacity: 0;
+  }
+
+  tbody tr:hover td {
+    background-color: rgb(255, 255, 255) !important;
+  }
+  tbody tr:hover {
+    background-color: rgb(255, 255, 255) !important;
+  }
+
+  tbody tr td,
+  tbody tr td p,
+  tbody tr td img {
+    /* transition: 0.2s ease-in-out; */
+  }
+
+  tbody tr.hide td,
+  tbody tr.hide td p {
+    padding: 0;
+    font: 0 / 0 sans-serif;
+    /* transition: .2s ease-in-out .5s; */
+  }
+ 
+  .card-body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+
+  .item.dragging {
+  opacity: 0.6;
+}
+.item.dragging :where(.details, i) {
+  opacity: 0;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.1/Sortable.min.js"
+  integrity="sha512-3N7dD+tlndNxwAC0PwGNWnnEpzHQwgNl6/c9XW6+nqptoMhbI9Rb6kQiUFtYmXrox60oIELVSFAO0dCSfKb2tw=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+{% block title %} Sales Offer {% endblock %}
+{% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div style="display: none;" class="file_upload file_upload_container">
+    <div class="container">
+      <h3 id="clientFirmaAdd-modal" class="close-window">X</h3>
+      <form id="sales_offer_file_add_form" enctype="multipart/form-data">
+        <span class="details"></span>
+        <input style="display: none;" type="file" name="inputfile file_input" id="id_file_up"
+          class="inputfile inputfile-3" />
+        <label id="file_label" for="id_file_up">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+            <path
+              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+          </svg>
+          <span id="details_span"></span></label>
+
+        <div class="button">
+          <input style="cursor: pointer;" id="submit_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window sales-offer-add-window">
+    <div id="sales_offer_container" class="container">
+      <h3 id="sales_offer-X" class="close-window sales_offerx">X</h3>
+      <div class="title">Yeni Satış Ekle</div>
+      <form id="sales_offer_add_form" action="#" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="sales_form" value="sales_form" />
+
+        <div class="user-details">
+
+          <div class="input-box" id="Client_Card">
+            <span id="firma_adi_span" class="details">Firma Adı*<button type="button" id="paying-company-add-btn"
+                class="paying-company-add-btn"><i class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete='off' type="text" id="id_Client_Card" name="Client_Card" class="myInput need_id"
+                placeholder="Firma Adını Seçiniz" data-dropdown="sales_offer_dropdown1" />
+
+              <div id="sales_offer_dropdown1" class="dropdown-content client-dropdown">
+
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span id="ilgilenen_kisi_span" class="details">İlgilenen Kişi*</span>
+            <div class="dropdown-container">
+              <input type="text" id="id_Person_Deal" name="Person_Deal" class="myInput" placeholder="İlgilenen Kişi"
+                data-dropdown="sales_offer_dropdown2" autocomplete="off" />
+              <div id="sales_offer_dropdown2" class="dropdown-content">
+                {% for x in workers %}
+                <span value="{{x.id}}" class="dropdown-item">{{x.Worker_Name}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span id="konum_span" class="details">Konum*</span>
+            <div class="dropdown-container">
+              <input type="text" id="id_Location_Card" name="Location_Card" class="myInput need_id"
+                placeholder="Konum Seçiniz" data-dropdown="sales_offer_dropdown3" autocomplete="off" />
+              <div id="sales_offer_dropdown3" class="dropdown-content">
+                {% for x in locations %}
+                <span value="{{x.Location}}" class="dropdown-item">{{x.Location}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span class="details">Teklif Bedeli - KDV Hariç ($)<button type="button" id="teklif_bedeli_btn"
+                class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+            <input class="coc-input formatInputs" type="text" name="Offer_Cost_NotIncludingKDV_Card"
+              id="id_Offer_Cost_NotIncludingKDV_Card" step="0.01" autocomplete="off" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span class="details">Birim Teklif ($)<button type="button" id="br_tek_btn" class="calc_btns"><i
+                  class="fa-solid fa-calculator"></i></button></span>
+            <input class="coc-input formatInputs" type="text" name="UnitOffer_NotIncludingKDV"
+              id="id_UnitOffer_NotIncludingKDV" step="0.01" autocomplete="off" placeholder="0.00" />
+
+          </div>
+          <div class="input-box">
+            <span class="details">AC Güç (kWe)</span>
+            <input class="coc-input formatInputs" type="text" name="AC_Power_Card" id="id_AC_Power_Card" step="1"
+              autocomplete="off" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span class="details">Toplam Maliyet ($)<button type="button" id="total_mal_btn" class="calc_btns"><i
+                  class="fa-solid fa-calculator"></i></button></span>
+            <input class="coc-input formatInputs" type="text" name="Cost_NotIncludingKDV_Card"
+              id="id_Cost_NotIncludingKDV_Card" step="0.01" autocomplete="off" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span class="details">Birim Maliyet - KDV Hariç ($)<button type="button" id="br_mal_btn"
+                class="calc_btns"><i class="fa-solid fa-calculator"></i></button></span>
+            <input class="coc-input formatInputs" type="text" name="UnitCost_NotIncludingKDV"
+              id="id_UnitCost_NotIncludingKDV" step="0.01" autocomplete="off" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span class="details">DC Güç (kWp)<button type="button" id="dc_guc_btn" class="calc_btns"><i
+                  class="fa-solid fa-calculator"></i></button></span>
+            <input class="coc-input formatInputs" type="text" name="DC_Power_Card" id="id_DC_Power_Card" step="1"
+              autocomplete="off" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span id="drum_span" class="details">Durumu*</span>
+            <div class="dropdown-container">
+              <input autocomplete='off' type="text" id="id_Situation_Card" name="Situation_Card" class="myInput"
+                placeholder="Durum Seçiniz" data-dropdown="sales_offer_dropdown4" />
+
+              <div id="sales_offer_dropdown4" class="dropdown-content">
+                <span class="dropdown-item">Potansiyel Müşteri</span>
+                <span class="dropdown-item">Maliyet Hesaplama</span>
+                <span class="dropdown-item">Fiyat Belirleme</span>
+                <span class="dropdown-item">Teklif Hazırlama</span>
+                <span class="dropdown-item">Teklif Hazır</span>
+                <span class="dropdown-item">Teklif Sunuldu</span>
+                <span class="dropdown-item">Sunum Sonrası Görüşme</span>
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span class="details">Yorum</span>
+            <input type="text" name="Comment_Card_1">
+          </div>
+          <div class="input-box">
+            <span class="details">Tarih</span>
+            <input class="date-inputs" id="tarih" type="text" name="Date_Card" placeholder="01.01.2000"
+              maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">ilgili Kişi</span>
+            <input class="coc-input" type="text" name="Person_Related" id="id_Person_Related" autocomplete="off"
+              placeholder="İlgili Kişi" />
+          </div>
+          <div class="input-box">
+            <span class="details">Arazi/Çatı</span>
+            <select name="Terrain_Roof_Card" id="id_Terrain_Roof_Card">
+              <option value="Arazi">Arazi</option>
+              <option value="Çatı">Çatı</option>
+            </select>
+          </div>
+
+          <div class="input-box">
+            <span class="details arazi-span">Arazi Bedeli($/MW)</span>
+            <input class="coc-input formatInputs" type="text" name="Roof_Cost_Card"
+              id="id_Roof_Cost_Card" step="1" autocomplete="off" placeholder="0.00" />
+          </div>
+
+          <div class="input-box">
+            <span class="details">Teklif Dosyası</span>
+            <input type="file" name="Offer_File_Card" id="id_Offer_File_Card_1" class="inputfile inputfile-1" />
+            <label for="id_Offer_File_Card_1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg>
+              <span>Teklif 1 Dosyası seçin</span></label>
+            <input type="file" name="Offer_File_Card_2" id="id_Offer_File_Card_2" class="inputfile inputfile-1" />
+            <label for="id_Offer_File_Card_2"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Teklif 2 Dosyası seçin</span></label>
+            <input type="file" name="Offer_File_Card_3" id="id_Offer_File_Card_3" class="inputfile inputfile-1" />
+            <label for="id_Offer_File_Card_3"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Teklif 3 Dosyası seçin</span></label>
+            <input type="file" name="Offer_File_Card_4" id="id_Offer_File_Card_4" class="inputfile inputfile-1" />
+            <label for="id_Offer_File_Card_4"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Teklif 4 Dosyası seçin</span></label>
+            <input type="file" name="Offer_File_Card_5" id="id_Offer_File_Card_5" class="inputfile inputfile-1" />
+            <label for="id_Offer_File_Card_5"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Teklif 5 Dosyası seçin</span></label>
+
+          </div>
+          <div class="input-box">
+            <span class="details">Maliyet Dosyası</span>
+            <input type="file" name="M_File_Card" id="id_M_File_Card_1" class="inputfile inputfile-2" />
+            <label for="id_M_File_Card_1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
+                viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Maliyet 1 Dosyası seçin</span></label>
+            <input type="file" name="M_File_Card_2" id="id_M_File_Card_2" class="inputfile inputfile-2" />
+            <label for="id_M_File_Card_2"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Maliyet 2 Dosyası seçin</span></label>
+            <input type="file" name="M_File_Card_3" id="id_M_File_Card_3" class="inputfile inputfile-2" />
+            <label for="id_M_File_Card_3"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+              </svg> <span>Maliyet 3 Dosyası seçin</span></label>
+
+          </div>
+
+        </div>
+        <div class="button">
+          <input id="sales-offer-create-btn" type="button" value="Satış Teklifi Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window client-add-window">
+    <div style="width: 400px" id="client_container" class="container">
+      <h3 id="client-X" class="close-window clientx">X</h3>
+      <div class="title">Firma Ekle</div>
+      <form id="firma_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="client_form" />
+
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+            <span id="firma_add_label" class="details">Firma Adı*</span>
+            <input id="id_CompanyName_Clients" name="CompanyName_Clients" type="text" />
+          </div>
+        </div>
+        <div class="button">
+          <input id="firma_submit_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window commend-add-window">
+    <div style="width: 400px" id="commend_container" class="container">
+      <h3 id="client-X" class="close-window clientx">X</h3>
+      <div class="title">Yorum Ekle</div>
+      <form id="commend_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="" />
+
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="">
+            <span id="" class="details">Muhatap</span>
+            <input id="Comment_Person_Card" name="" type="text" />
+          </div>
+          <div id="firma_input_box" class="input-box" name="">
+            <span id="" class="details">Telefon Numarası</span>
+            <input id="Comment_Telno_Card" name="" type="text" />
+          </div>
+          <div id="firma_input_box" class="input-box" name="">
+            <span id="" class="details">Tarih</span>
+            <input id="Comment_Date_Card" class="date-inputs" name="" type="text" maxlength="10" />
+          </div>
+          <div id="firma_input_box" class="input-box" name="">
+            <span id="" class="details">Yorum</span>
+            <textarea style="height: 83px; padding: 3px 15px;" name="" id="Comment_Card"></textarea>
+          </div>
+        </div>
+        <div class="button">
+          <input onclick="commendSubmitFunction()" id="firma_submit_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="right-menu">
+    <div class="top-menu">
+      <div>
+        <button style="display: none;" class="hamburger-button"><i class="fa-solid fa-bars"></i></button>
+        <span class="xspan">Satış Teklif</span>
+      </div>
+      <ul class="top-menu-ul">
+        <li id="list">Liste</li>
+        <li id="waiting_job">Bekleyen İşler</li>
+        <li id="sale_time">Satış Süreci</li>
+        <li id="losing_job">Kaybedilen İşler</li>
+        <li id="won_job">Kazanılan İşler</li>
+      </ul>
+
+      <div class="top_right_box">
+        <button class="project-add-btn">Yeni Satış</button>
+        <button style="display: none;" class="hamburger-button2"><i class="fa-solid fa-bars"></i></button>
+      </div>
+
+
+    </div>
+    
+    <div class="main-container">
+      <div class="titles">
+        <div class="title">
+          <p>Potansiyel Müşteri</p>
+        </div>
+        <div class="title">
+          <p>Maliyet Hesaplama</p>
+        </div>
+        <div class="title">
+          <p>Fiyat Belirleme</p>
+        </div>
+        <div class="title">
+          <p>Teklif Hazırlama</p>
+        </div>
+        <div class="title">
+          <p>Teklif Hazır</p>
+        </div>
+        <div class="title">
+          <p>Teklif Sunuldu</p>
+        </div>
+        <div class="title">
+          <p style="font-size: 0.78vw;">Sunum Sonrası Görüşme</p>
+        </div>
+
+
+      </div>
+      <div class="sales_container container">
+        <div class="rows" data-situation="Potansiyel Müşteri">
+          <div style="background-color: #D0DDFB;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          
+            
+        
+          <ul class="card-body">
+            
+          </ul>
+          
+        </div>
+        <div class="rows" data-situation="Maliyet Hesaplama">
+          <div style="background-color: #9DB8FB;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          <ul class="card-body">
+
+          </ul>
+        </div>
+        <div class="rows" data-situation="Fiyat Belirleme">
+          <div style="background-color: #ece75f;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          <ul class="card-body">
+
+          </ul>
+
+        </div>
+        <div class="rows" data-situation="Teklif Hazırlama">
+          <div style="background-color: #e5de00;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          <ul class="card-body">
+
+          </ul>
+        </div>
+        <div class="rows" data-situation="Teklif Hazır">
+          <div style="background-color: #e6cc00;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          
+          <ul class="card-body">
+
+          </ul>
+        </div>
+        <div class="rows" data-situation="Teklif Sunuldu">
+          <div style="background-color: #e69b00;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          <ul class="card-body">
+
+          </ul>
+        </div>
+        <div class="rows" data-situation="Sunum Sonrası Görüşme">
+          <div style="background-color: #e47200;" class="total-cash">
+            <span></span>
+            <span></span>
+          </div>
+          <ul class="card-body">
+
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div style="display: none;" class="list-container container top-container">
+      <div class="lists">
+        <table id="list_table" class="table table-sortable">
+          <thead>
+            <th style="width: 100px;"></th>
+            <th style="padding: 0px 80px;">Durum<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Müşteri Adı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+            <th>İlgili Kişi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil B.M.<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil T.T.<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th style="padding: 0px 50px;">Tarih<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 1<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 2<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 3<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 4<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 5<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 6<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Yorum 7<span class="icon-arrow">&UpArrow;</span></th>
+          </thead>
+          <tbody>
+            <!-- {% for card in sales_offer_card%}
+                  <tr data-id="{{ card.id }}"
+                    {% if card.Is_Gain == True %} class="gain-job"
+                    {% elif card.Is_Lost == True %} class="lost-job"
+                    {% elif card.Is_late == True %} class="wait-job"
+                    {% elif card.Situation_Card == 'Potansiyel Müşteri' %} class="pot-mus"
+                    {% elif card.Situation_Card == 'Maliyet Hesaplama' %} class="mal-hes"
+                    {% elif card.Situation_Card == 'Fiyat Belirleme' %} class="fi-be"
+                    {% elif card.Situation_Card == 'Teklif Hazırlama' %} class="tek-hazırlama"
+                    {% elif card.Situation_Card == 'Teklif Hazır' %} class="tek-hazır"
+                    {% elif card.Situation_Card == 'Teklif Sunuldu' %} class="tek-sunuldu"
+                    {% elif card.Situation_Card == 'Sunum Sonrası Görüşme' %} class="sun-son-gor"
+                    {% endif %}
+                    >
+
+                    <td class="list_firt_tr"><a href="{% url 'sales_offer_revises' card_id=card.id %}"><i class="fas fa-book"></i></a><span class="icon-blue"></span></td>
+                    {% if card.Is_Gain == True %}
+                    <td class="gain-job">Kazanılan İş</td>
+
+                    {% elif card.Is_Lost == True %}
+                    <td class="lost-job">Kaybedilen İş</td>
+
+                    {% elif card.Is_late == True %}
+                    <td class="wait-job">Bekleyen İş</td>
+
+                    {% else %}
+                    <td class="run-job">{{card.Situation_Card}}</td>
+
+                    {% endif %}
+                    <td> {{card.Client_Card}} </td>
+                    <td>{{card.Location_Card}}</td>
+                    <td>{{card.Person_Deal}}</td>
+                    <td>{{card.AC_Power_Card}}</td>
+                    <td>{{card.DC_Power_Card}}</td>
+                    <td>{{card.UnitCost_NotIncludingKDV}}</td>
+                    <td>{{card.Cost_NotIncludingKDV_Card}}</td>
+                    <td>{{card.UnitOffer_NotIncludingKDV}}</td>
+                    <td>{{card.Offer_Cost_NotIncludingKDV_Card}}</td>
+                    <td>{{card.Terrain_Roof_Card}}</td>
+                    <td>{{card.Roof_Cost_Card}}</td>
+                    <td>{{card.Unit_Cost_with_Roof_Cost}}</td>
+                    <td>{{card.Unit_Offer_with_Roof_Cost}}</td>
+                    <td>{{card.Profit_Rate_Card}}</td>
+                    <td>{{card.Date_Card| date:"d F y"}}</td>
+
+                    
+                  </tr>
+                  {% endfor %}       -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="display: none;" class="lost-job-container container top-container">
+      <div class="lists">
+        <table id="lost_table">
+          <thead>
+            <th></th>
+            <th>Müşteri Adı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+            <th>İlgili Kişi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+          </thead>
+          <tbody>
+            {% for card in sales_offer_card %}
+            {% if card.Is_Lost == True %}
+            <tr>
+              <td>
+                <a href="#" onclick="reLostCard({{ card.id }}); return false;">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </a>
+              </td>
+              <td> {{card.Client_Card}} </td>
+              <td>{{card.Location_Card}}</td>
+              <td>{{card.Person_Deal}}</td>
+              <td>{{card.AC_Power_Card}}</td>
+              <td>{{card.DC_Power_Card}}</td>
+              <td>{{card.UnitCost_NotIncludingKDV}}</td>
+              <td>{{card.Cost_NotIncludingKDV_Card}}</td>
+              <td>{{card.UnitOffer_NotIncludingKDV}}</td>
+              <td>{{card.Offer_Cost_NotIncludingKDV_Card}}</td>
+              <td>{{card.Terrain_Roof_Card}}</td>
+              <td>{{card.Roof_Cost_Card}}</td>
+              <td>{{card.Unit_Cost_with_Roof_Cost}}</td>
+              <td>{{card.Unit_Offer_with_Roof_Cost}}</td>
+              <td>{{card.Profit_Rate_Card}}</td>
+
+              <td>{{card.Date_Card| date:"d F y"}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="display: none;" class="sales-container container top-container">
+      <div class="lists">
+        <table id="sales_table" class="table table-sortable table_row">
+          <thead>
+            <th></th>
+            <th>Müşteri Adı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+            <th>İlgili Kişi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+          </thead>
+          <tbody>
+            {% for card in sales_offer_card%}
+            {% if card.Is_late == True %}
+            <tr>
+              <td onclick="reWaitCard({{ card.id }})"><a><i class="fa-solid fa-rotate-left"></i></a></i></td>
+              <td> {{card.Client_Card}} </td>
+              <td>{{card.Location_Card}}</td>
+              <td>{{card.Person_Deal}}</td>
+              <td>{{card.AC_Power_Card}}</td>
+              <td>{{card.DC_Power_Card}}</td>
+              <td>{{card.UnitCost_NotIncludingKDV}}</td>
+              <td>{{card.Cost_NotIncludingKDV_Card}}</td>
+              <td>{{card.UnitOffer_NotIncludingKDV}}</td>
+              <td>{{card.Offer_Cost_NotIncludingKDV_Card}}</td>
+              <td>{{card.Terrain_Roof_Card}}</td>
+              <td>{{card.Roof_Cost_Card}}</td>
+              <td>{{card.Unit_Cost_with_Roof_Cost}}</td>
+              <td>{{card.Unit_Offer_with_Roof_Cost}}</td>
+              <td>{{card.Profit_Rate_Card}}</td>
+              <td>{{card.Date_Card| date:"d F y"}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="display: none;" class="won-container container top-container">
+      <div class="lists">
+        <table id="won_table" class="table table-sortable table_row">
+          <thead>
+            <th></th>
+            <th>Müşteri Adı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+            <th>İlgili Kişi<span class="icon-arrow">&UpArrow;</span></th>
+            <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Birim Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Dahil Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+          </thead>
+          <tbody>
+            {% for card in sales_offer_card%}
+            {% if card.Is_Gain == True %}
+            <tr>
+              <td onclick="reGainCard({{ card.id }})"><a><i class="fa-solid fa-rotate-left"></i></a></i></td>
+              <td> {{card.Client_Card}} </td>
+              <td>{{card.Location_Card}}</td>
+              <td>{{card.Person_Deal}}</td>
+              <td>{{card.AC_Power_Card}}</td>
+              <td>{{card.DC_Power_Card}}</td>
+              <td>{{card.UnitCost_NotIncludingKDV}}</td>
+              <td>{{card.Cost_NotIncludingKDV_Card}}</td>
+              <td>{{card.UnitOffer_NotIncludingKDV}}</td>
+              <td>{{card.Offer_Cost_NotIncludingKDV_Card}}</td>
+              <td>{{card.Terrain_Roof_Card}}</td>
+              <td>{{card.Roof_Cost_Card}}</td>
+              <td>{{card.Unit_Cost_with_Roof_Cost}}</td>
+              <td>{{card.Unit_Offer_with_Roof_Cost}}</td>
+              <td>{{card.Profit_Rate_Card}}</td>
+              <td>{{card.Date_Card| date:"d F y"}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'sales_offer.js' %}"></script>
+
+
+<script>
+  // Revize  işlemleri 
+  async function reviseCard(cardId) {  
+    const today = new Date();
+    const isoDate = today.toISOString();
+    const data = await apiFunctions("sales_offer", "GETID", "x", cardId)
+    console.log(data);
+    const formData = new FormData();
+    formData.append("Revise_Owner", cardId);
+    formData.append("Revize_created_at", isoDate);
+    formData.append("Location_Card", data.Location_Card);
+    formData.append("Cost_NotIncludingKDV_Card", data.Cost_NotIncludingKDV_Card);
+    formData.append("Offer_Cost_NotIncludingKDV_Card", data.Offer_Cost_NotIncludingKDV_Card);
+    formData.append("AC_Power_Card", data.AC_Power_Card);
+    formData.append("DC_Power_Card", data.DC_Power_Card);
+    formData.append("UnitCost_NotIncludingKDV", data.UnitCost_NotIncludingKDV);
+    formData.append("UnitOffer_NotIncludingKDV", data.UnitOffer_NotIncludingKDV);
+    formData.append("Situation_Card", data.Situation_Card);
+    formData.append("Date_Card", data.Date_Card);
+    formData.append("Terrain_Roof_Card", data.Terrain_Roof_Card);
+    formData.append("Roof_Cost_Card", data.Roof_Cost_Card);
+    formData.append("Person_Deal", data.Person_Deal);
+    formData.append("Person_Related", data.Person_Related);
+    formData.append("Unit_Cost_with_Roof_Cost", data.Unit_Cost_with_Roof_Cost);
+    formData.append("Unit_Offer_with_Roof_Cost", data.Unit_Offer_with_Roof_Cost);
+    formData.append("Profit_Rate_Card", data.Profit_Rate_Card);
+    formData.append("Client_Card", data.Client_Card);
+    const formDataObj = Object.fromEntries(formData.entries());
+    console.log(JSON.stringify(formDataObj));
+    await apiFunctions("sales_offer_revise", "POST", formData, cardId);
+    // const csrftoken = getCookie('csrftoken');
+
+    // if (!csrftoken) {
+    //   console.error('CSRF token bulunamadı.');
+    //   return;
+    // }
+
+    // fetch(`AFM/create_revise/${cardId}/`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'X-CSRFToken': csrftoken,
+    //   },
+    // })
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('Kaybedildi işlemi başarısızz');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then(data => {
+    //     console.log('Kaybedildi işlemi başarılı', data);
+    //     //location.reload();
+    //     //var newUrl = "".replace("0", cardId);
+    //     //window.location.href = newUrl;
+    //   })
+    //   .catch(error => {
+    //     console.error('Hata:', error.message);
+    //   });
+
+
+  }
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    return parts.length === 2 ? parts.pop().split(';').shift() : null;
+  }
+
+
+</script>
+<!-- <script>
+  'use strict';
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var inputs = document.querySelectorAll('.inputfile-1');
+
+    Array.prototype.forEach.call(inputs, function (input, index) {
+      var label = input.nextElementSibling;
+      var nextLabel = inputs[index + 1] ? inputs[index + 1].nextElementSibling : null;
+      console.log(label)
+
+      input.addEventListener('change', function () {
+        if (index < inputs.length - 1 && nextLabel) {
+          nextLabel.style.display = 'inline-block';
+          inputs[index + 1].style.display = 'inline-block';
+        }
+      });
+
+      input.addEventListener('change', function (e) {
+        var label = input.nextElementSibling,        
+          labelVal = label.innerHTML;
+         
+        var fileName = '';
+        if (input.files && input.files.length > 1)
+          fileName = (input.getAttribute('data-multiple-caption') || '').replace('{count}', input.files.length);
+        else
+          fileName = e.target.value.split('\\').pop();
+
+        if (fileName) {
+          label.querySelector('span').innerHTML = fileName;
+        } else {
+          var defaultText = 'Teklif&nbsp;' + (index + 1) + ' Dosyası seçin';
+          label.querySelector('span').innerHTML = defaultText;
+        }
+      });
+
+      if (input.files && input.files.length > 0 && nextLabel) {
+        nextLabel.style.display = 'inline-block';
+        inputs[index + 1].style.display = 'inline-block';
+      } else {
+        var defaultText = 'Teklif ' + (index + 1) + ' Dosyası seçin';
+        var fileName = label.querySelector('span').textContent;
+        if (fileName !== defaultText) {
+          label.style.display = 'inline-block';
+        }
+      }
+    });
+  });
+
+</script>
+<script>
+  'use strict';
+  document.addEventListener('DOMContentLoaded', function () {
+    var inputs = document.querySelectorAll('.inputfile-2');
+
+    Array.prototype.forEach.call(inputs, function (input, index) {
+      var label = input.nextElementSibling;
+      var nextLabel = inputs[index + 1] ? inputs[index + 1].nextElementSibling : null;
+
+      input.addEventListener('change', function () {
+        if (index < inputs.length - 1 && nextLabel) {
+          nextLabel.style.display = 'inline-block';
+          inputs[index + 1].style.display = 'inline-block';
+        }
+      });
+
+      input.addEventListener('change', function (e) {
+        var label = input.nextElementSibling,
+          labelVal = label.innerHTML;
+
+        var fileName = '';
+        if (input.files && input.files.length > 1)
+          fileName = (input.getAttribute('data-multiple-caption') || '').replace('{count}', input.files.length);
+        else
+          fileName = e.target.value.split('\\').pop();
+
+        if (fileName) {
+          label.querySelector('span').innerHTML = fileName;
+        } else {
+          var defaultText = 'Maliyet ' + (index + 1) + ' Dosyası seçin';
+          label.querySelector('span').innerHTML = defaultText;
+        }
+      });
+
+      // Check if the input initially has a file selected
+      if (input.files && input.files.length > 0 && nextLabel) {
+        nextLabel.style.display = 'inline-block';
+        inputs[index + 1].style.display = 'inline-block';
+      } else {
+        // Sayfa yüklendiğinde dosya adı varsa ve farklıysa labelı görünür yap
+        var defaultText = 'Maliyet ' + (index + 1) + ' Dosyası seçin';
+        var fileName = label.querySelector('span').textContent;
+        if (fileName !== defaultText) {
+          label.style.display = 'inline-block';
+        }
+      }
+    });
+  });
+</script> -->
+
+
+
+{% endblock %}

@@ -1,0 +1,1270 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_files %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'ocd.css' %}">
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'operation_care_details.css' %}"> -->
+
+<style>
+     :root {
+        --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+    .table__header button.back-button {
+    cursor: pointer;
+    font-size: 42px;
+    background-color: #fff5;
+    border: none;
+    padding: 0 13px;
+    border-radius: 50%;
+    transition: .2s;
+}
+.sidebar-links li.isletme_bakim_li {
+  background: var(--main-color-dark);
+}
+.y{
+    position: sticky;
+      top: 0px;
+      left: 0;
+}
+.y th:hover{
+    color: black !important;
+}
+.x{
+      position: sticky;
+      top: 71px;
+      left: 0;
+}
+.date_th{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.date_th select{
+    font-weight: 700;
+    cursor: pointer;
+}
+#id_date_select option:nth-child(2){
+    display: none;
+}
+</style>
+
+
+{% endblock %}
+{% block title %} Operation and Care Details {% endblock %}
+{% block content %}
+<div class="body-div">
+    <div class="window inventor-edit-window">
+        <div class="container">
+          <h3 id="operation-care-X" class="close-window">X</h3>
+          <div class="title">İnventör Düzenle</div>
+          <form id="inventor_add_form" action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="form" />
+    
+            <div class="user-details">    
+
+              <div class="input-box" style="display: none;">                  
+                  <input type="text" name="Inventor_Owner" id="id_Inventor_Owner">
+              </div>   
+
+              <div class="input-box">
+                <span id="proje_kodu_span" class="details">Panel Markası</span>
+                <input type="text" name="Inventor_Panel_Brand" id="id_Inventor_Panel_Brand">
+              </div>         
+              
+              <div class="input-box">
+                <span class="details">Panel Gücü</span>
+                <input class="coc-input formatInputs" type="text" name="Inventor_Capacity"
+                  id="id_Inventor_Capacity" step="1" autocomplete="off" />
+              </div>
+              <div class="input-box">
+                <span class="details">İzolasyon</span>
+                <select name="Inventor_Izolasion" id="id_Inventor_Izolasion">
+                    <option value="OK">OK</option>
+                    <option value="FAULT">FAULT</option>
+                </select>
+              </div>
+              
+              <div class="input-box">
+                <span class="details">Panel VOC</span>
+                <input class="coc-input formatInputs" type="text" name="Inventor_VOC" id="id_Inventor_VOC"
+                  step="0.1" autocomplete="off" />
+              </div>
+    
+              
+              <div class="input-box">
+                <span class="details">AC Güç(kWe)</span>
+                <input class="formatInputs" id="id_Inventor_AC_Power" type="text" name="Inventor_AC_Power" />
+              </div>
+              <div class="input-box">
+                <span class="details">String Sayısı</span>
+                <input id="id_Inventor_Number_Str" type="text" name="Inventor_Number_Str" />
+              </div>
+              
+              <div class="input-box">
+                <span class="details">DC Güç(kWp)</span>
+                <input class="formatInputs" id="id_Inventor_DC_Power" type="text" name="Inventor_DC_Power" />
+              </div>
+              <div class="input-box">
+                <span class="details">1 stringteki Panel Sayısı</span>
+                <input id="id_Inventor_Panel_SY" type="text" name="Inventor_Panel_SY" />
+              </div>
+              
+              <div class="input-box">
+                <span class="details">Yön</span>
+                <select name="Inventor_Direction" id="id_Inventor_Direction">
+                  <option value="Kuzey">Kuzey</option>
+                  <option value="Güney">Güney</option>
+                  <option value="Doğu">Doğu</option>
+                  <option value="Batı">Batı</option>
+                </select>    
+              </div>
+            </div>
+            <div class="button">
+              <input id="inventor-edit-btn" type="button" value="İnventörü Kaydet" />
+            </div>
+          </form>
+        </div>
+    </div>
+    <div class="window ariza-add-window">
+        <div class="container">
+          <h3 id="ariza-X" class="close-window">X</h3>
+          <div class="title">Arıza Bildir</div>
+          <form id="ariza-add-form" action="#" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="form" />
+    
+            <div class="user-details">
+    
+              <div class="input-box" id="ProjectName_ExpensesInput">
+                <span id="Fail_Operation_Span" class="details">İşletme Bakım *</span>
+                <div class="dropdown-container">
+                  <input autocomplete='off' type="text" id="id_Fail_Operation_Care" name="Fail_Operation_Care"
+                    class="myInput need_id" placeholder="İşletme Bakım Seçiniz" data-dropdown="ariza-add-dropdown1">
+    
+                  <div id="ariza-add-dropdown1" class="dropdown-content operation-dropdown">
+                    {% for x in operation_cares %}
+                    <span value="{{x.id}}" class="dropdown-item">{{x.Operation_Care_Company}}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+    
+              <div class="input-box" id="ProjectNameInput">
+                <span id="proje_adi_span" class="details">Santral İsmi</span>
+                <input autocomplete='off' type="text" name="Fail_Central_Name" maxlength="63"
+                  placeholder="Santral İsmi Giriniz" id="id_Fail_Central_Name" autocomplete="off">
+              </div>
+              <div class="input-box" id="ProjectCodeInput">
+                <span id="proje_kodu_span" class="details">Bilgi Verilen Kişi</span>
+                <input type="text" placeholder="Bilgi Verilen Kişi Giriniz" name="Fail_Information_Person"
+                  id="id_Fail_Information_Person">
+              </div>
+    
+              <div class="input-box">
+                <span class="details">Arıza Tespit Tarihi</span>
+                <input class="date-inputs" type="text" placeholder="01.01.2000" name="Fail_Detection_Date" id="id_Fail_Detection_Date" maxlength="10">
+              </div>
+              <div class="input-box">
+                <span class="details">Garanti Kapsam Durumu</span>
+                <select name="Fail_Guaranteed" id="id_Fail_Guaranteed">
+                  <option value="Belirsiz">Belirsiz</option>
+                  <option value="Evet">Evet</option>
+                  <option value="Hayır">Hayır</option>
+                </select>
+              </div>
+              <div class="input-box medium">
+                <span class="details">Arıza Ayrıntısı</span>
+                <input name="Fail_Detail" id="id_Fail_Detail" type="text">
+              </div>
+            </div>
+            <div class="button">
+              <input id="ariza-create-btn" type="button" value="Arıza Bildir" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="window ariza-fatura-add-window">
+        <div class="container">
+          <h3 id="ariza-fatura-X" class="close-window">X</h3>
+          <div class="title">Arıza Bakım Faturası</div>
+          <form id="fatura_form" action="#" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="form" />
+    
+            <div class="user-details">
+    
+    
+    
+              <div class="input-box" id="Fail_bill">
+                <span class="details">Santral İsmi</span>
+                <input autocomplete='off' type="text" name="Fail_Bill_Central_Name" maxlength="63"
+                  placeholder="Santral İsmi Giriniz" id="id_Fail_Bill_Central_Name" autocomplete="off">
+              </div>
+              <div class="input-box" id="ProjectCodeInput">
+                <span class="details">Yapılan İşlem</span>
+                <input type="text" name="Fail_Bill_Process" id="id_Fail_Bill_Process" placeholder="Yapılan İşlemi Giriniz">
+              </div>
+    
+              <div class="input-box">
+                <span class="details">Tarih</span>
+                <input class="date-inputs" type="text" name="Fail_Bill_Date" id="id_Fail_Bill_Date" placeholder="Tarih Giriniz">
+              </div>
+              <div class="input-box">
+                <span class="details">Fatura Belge</span>
+                <input style="display: none;" type="file" name="Fail_Bill_File" id="id_Fail_Bill_File" class="inputfile inputfile-1" />
+                <label id="file_label" for="id_Fail_Bill_File">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                    <path
+                      d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                  </svg>
+                  <span id="fatura_file_span">Fatura Belgesi Seçin</span></label>
+              </div>
+              <div class="input-box large">
+                <span class="details">Açıklama</span>
+                <input class="coc-input" type="text" name="Fail_Bill_Detail" id="id_Fail_Bill_Detail" autocomplete="off"
+                  placeholder="Açıklama Giriniz" />
+              </div>
+    
+    
+            </div>
+            <div class="button">
+              <input type="button" id="fatura-create-btn" value="Arıza Bakım Faturası Ekle" />
+            </div>
+          </form>
+        </div>
+      </div>
+
+    {% include 'partials/_left_nav_bar.html' %}
+    <div class="right-menu">
+        <div class="bakim_kontrol_list">
+            <main class="table" id="customers_table">
+                <section class="table__header">
+                    <a href="{% url 'operation_care' %}">
+                        <button style="color: rgb(47, 65, 79);" class="back-button">
+                          <i class="fa-solid fa-angles-left"></i>
+                        </button>
+                      </a>
+                    <ul class="top-menu-ul">
+                        <li id="bakim_kontrol_listesi">Bakım Kontrol Listesi</li>
+                        <li id="ariza_takip">Arıza Takip</li>
+                        <li id="bakim_takip">Bakım Takip</li>
+                    </ul>
+                    <div class="export__file">
+                        <button id="ariza_add_btn" style="margin-right: 10px;" class="button-project-start">Arıza Bildir</button>
+                        <button class="inventor_add_btn">İnventör</button>
+                    </div>
+                </section>
+                <div class="anket-container table__body">
+
+                    <div class="anket-body">
+                        <div class="anket_left">
+                            <div class="row">
+                                <span class="r1">NO</span>
+                                <span class="r2">SÖZLEŞME KAPSAMI OLAN HİZMETİN ADI</span>
+                                <span id="{{operation_care.id}}" class="r3 operation_id">KONTROL METODU</span>
+                            </div>
+                        </div>
+                        <div class="anket_right">
+                            <div class="row">
+                                <div class="time-box r4">
+                                    <div class="t-left">
+                                        <div class="top">
+                                            <select class="date_select" name="" id="id_date_select">
+                                                <option value="">Tarih Seçin</option>
+                                                {% for poll in polls %}
+                                                <option data-id="{{poll.id}}" value="{{poll.Poll_Date | date:'Y-m-d'}}">{{poll.Poll_Date | date:"d.m.Y"}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="bottom">
+                                            <div>
+                                                <p>TAMAM</p>
+                                            </div>
+                                            <div>
+                                                <p>DEĞİL</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="t-right">
+                                        <div class="top">
+                                            <input name="Poll_Date" id="anket_date_input" class="date-inputs" type="text" placeholder="01.01.2000" maxlength="10" readonly>
+                                        </div>
+                                        <div class="bottom">
+                                            <div>
+                                                <p>TAMAM</p>
+                                            </div>
+                                            <div>
+                                                <p>DEĞİL</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="r5">NOTLAR</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="anket-list">
+                        <div class="top">
+                            <div class="anket_left">
+                                <div class="row-block"><span>1. FV Modüller</span></div>
+                                <div class="row">
+                                    <div class="r1"><span>1.1</span></div>
+                                    <div class="r2"><label for="1.1">FV panel yüzey temizliği kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>1.2</span></div>
+                                    <div class="r2"><label for="1.2">FV panel fiziksel kontrolü (Kırıç-Çatlak-hücre
+                                            Yanığı vs)</label></div>
+                                    <div class="r3"><span>Görsel + Termal Kamera</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>1.3</span></div>
+                                    <div class="r2"><label for="1.3">Diziler arası kablo elektriksel bağlantı
+                                            kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Termal Kamera</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>1.4</span></div>
+                                    <div class="r2"><label for="1.4">Diziler arası kablo terminal bağlantı kontrolü
+                                            (JUNCTION BOX - KONNEKTÖR)</label></div>
+                                    <div class="r3"><span>Görsel + Termal Kamera</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>1.5</span></div>
+                                    <div class="r2"><label for="1.5">Dizlerin açık devre gerilim ölçümü ( PANEL x 40-45V
+                                            )</label></div>
+                                    <div class="r3"><span>Ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>1.6</span></div>
+                                    <div class="r2"><label for="1.6">Dizlerin kısa devre akım ölçümü (PANEL DATASHEET
+                                            12-13A)</label></div>
+                                    <div class="r3"><span>Ölçü aleti</span></div>
+                                </div>
+                                <div class="row-block"><span>2. İnverter</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>2.1</span></div>
+                                    <div class="r2"><label for="">Çalışan ekipmanların durum kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>2.2</span></div>
+                                    <div class="r2"><label for="">Tüm bağlantıların kontrol edilmesi (kablo, klemens
+                                            vida vb.)</label></div>
+                                    <div class="r3"><span>Görsel + Mek+Termal Kamera</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>2.3</span></div>
+                                    <div class="r2"><label for="">DC-AC voltaj test ve kontrolü (en düşük ve en
+                                            yüksek)</label></div>
+                                    <div class="r3"><span>Görsel +Ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>2.4</span></div>
+                                    <div class="r2"><label for="">Hata kayıtları incelenmesi ve led ekran çalışma
+                                            kontrolu</label></div>
+                                    <div class="r3"><span>Görsel ve Yazılım</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>2.5</span></div>
+                                    <div class="r2"><label for="">Kablo etiketleme kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>2.6</span></div>
+                                    <div class="r2"><label for="">Giriş ve çıkış fan ızgaralarının ve ilgili
+                                            filitrelerin kontrolu</label></div>
+                                    <div class="r3"><span>Görsel ve Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>2.7</span></div>
+                                    <div class="r2"><label for="">Fanın çalışma ve toz kontrolu</label></div>
+                                    <div class="r3"><span>Görsel ve Mekanik</span></div>
+                                </div>
+                                <div class="row-block"><span>3. DC Kablo</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>3.1</span></div>
+                                    <div class="r2"><label for="">Kablo yüzey kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>3.2</span></div>
+                                    <div class="r2"><label for="">Kablo taşıma elemanları bağlantı kontrolü</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>3.3</span></div>
+                                    <div class="r2"><label for="">Kablo etiketleme kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>3.4</span></div>
+                                    <div class="r2"><label for="">Kablo rogarları kontrol - Pano Güzergahı</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row-block"><span>4. AC Panolar</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>4.1</span></div>
+                                    <div class="r2"><label for="">Kablo bağlantı terminallerinin kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Termal Kamera</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>4.2</span></div>
+                                    <div class="r2"><label for="">İkaz işaretleri kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>4.3</span></div>
+                                    <div class="r2"><label for="">Sigorta, parafudur, devre kesicisi vs.
+                                            kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>4.4</span></div>
+                                    <div class="r2"><label for="">Su ve toz geçirkenlik kontrolü ve paslanma
+                                            kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>4.5</span></div>
+                                    <div class="r2"><label for="">Şalter Bağlantıları kontrolü</label></div>
+                                    <div class="r3"><span>Tork</span></div>
+                                </div>
+                                <div class="row-block"><span>5. Topraklama</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>5.1</span></div>
+                                    <div class="r2"><label for="">Topraklama sisteminin genel kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>5.2</span></div>
+                                    <div class="r2"><label for="">Topraklama iletkenlerinin bağlantı kontrolü, ölçülmesi
+                                            ve denetlenmesi</label></div>
+                                    <div class="r3"><span>Görsel ve ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>5.3</span></div>
+                                    <div class="r2"><label for="">Topraklama direnci ölçümü</label></div>
+                                    <div class="r3"><span>Ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>5.4</span></div>
+                                    <div class="r2"><label for="">Yıldırımdan koruma sisteminin kontrolu</label></div>
+                                    <div class="r3"><span>Ölçü aleti</span></div>
+                                </div>
+                                <div class="row-block"><span>6. Konstrüksiyon</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>6.1</span></div>
+                                    <div class="r2"><label for="">Korozyon kontrolü</label></div>
+                                    <div class="r3"><span>Görsel ve Ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>6.2</span></div>
+                                    <div class="r2"><label for="">Bağlantı noktalarında cıvata gevşeklik
+                                            kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>6.3</span></div>
+                                    <div class="r2"><label for="">Panel bağlantı elemanları gevşeklik kontrolü</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>6.4</span></div>
+                                    <div class="r2"><label for="">Kolonların temel sağlamlık kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>6.5</span></div>
+                                    <div class="r2"><label for="">Masalarda dalgalanma kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>6.6</span></div>
+                                    <div class="r2"><label for="">Panel eğim açısı kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row-block"><span>7. Aydınlatma ve Kamera</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>7.1</span></div>
+                                    <div class="r2"><label for="">Kamera ve Armatür sağlamlık kontrolleri</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>7.2</span></div>
+                                    <div class="r2"><label for="">Kamera kapsama alanı ve armatür aydınlık seviyesi
+                                            kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>7.3</span></div>
+                                    <div class="r2"><label for="">Kamera montaj elemanları gevşeklik kontrolü</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>7.4</span></div>
+                                    <div class="r2"><label for="">Görüntü kalitesi kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>7.5</span></div>
+                                    <div class="r2"><label for="">Kamera kayıt sistemi kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Yazılım</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>7.6</span></div>
+                                    <div class="r2"><label for="">Kamera switch bağlantı kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>7.7</span></div>
+                                    <div class="r2"><label for="">Aydınlatma elektriksel ve mekanik bağlantı
+                                            kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Ölçü aleti</span></div>
+                                </div>
+                                <div class="row-block"><span>8. GES TR</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>8.1</span></div>
+                                    <div class="r2"><label for="">KGenel Temizlik kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.2</span></div>
+                                    <div class="r2"><label for="">OG hücre kontrolü (Giriş, Çıkış, Ölçü ve TR
+                                            Koruma)</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.3</span></div>
+                                    <div class="r2"><label for="">Orta Gerilim kablo izolasyolasyon kontrolü</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.4</span></div>
+                                    <div class="r2"><label for="">Topraklama izolasyolasyon kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.5</span></div>
+                                    <div class="r2"><label for="">Trafo AG ve OG çıkış gerilimlerinin kontrolü</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.6</span></div>
+                                    <div class="r2"><label for="">Trafo sıcaklık kontrolü</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.7</span></div>
+                                    <div class="r2"><label for="">Redresör fonksiyon kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Ölçü aleti</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>8.8</span></div>
+                                    <div class="r2"><label for="">Trafo primer ve sekonder bağlantı kontrolü</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row-block"><span>9. Saha Bak.</span></div>
+                                <!--  -->
+                                <div class="row">
+                                    <div class="r1"><span>9.1</span></div>
+                                    <div class="r2"><label for="">Yüzey üzerindeki bitkilerin temizlik durumu
+                                            raporlanması</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>9.2</span></div>
+                                    <div class="r2"><label for="">Drenaj sistemi kontrol ve temizlik durumu
+                                            raporlanması</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>9.3</span></div>
+                                    <div class="r2"><label for="">Saha içi yolların durum raporu</label></div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>9.4</span></div>
+                                    <div class="r2"><label for="">Yangın tüplerinin kontrolü</label></div>
+                                    <div class="r3"><span>Görsel + Mekanik</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="r1"><span>9.5</span></div>
+                                    <div class="r2"><label for="">Sahadaki atık madde temizliğinin raporlanması</label>
+                                    </div>
+                                    <div class="r3"><span>Görsel</span></div>
+                                </div>
+                            </div>
+                            <div class="anket_right">
+                                <!-- 1. FV Modüller -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_1_1_1">
+                                        <input type="checkbox" id="checkbox_1_1_2">
+                                        <input name="answer_1_1" type="radio" value="true" onclick="kontrolEt('answer_1_1')">
+                                        <input name="answer_1_1" type="radio" value="false" onclick="kontrolEt('answer_1_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_1_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_1_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_1_2_1">
+                                        <input type="checkbox" id="checkbox_1_2_2">
+                                        <input name="answer_1_2" type="radio" value="true" onclick="kontrolEt('answer_1_2')">
+                                        <input name="answer_1_2" type="radio" value="false" onclick="kontrolEt('answer_1_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_1_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_1_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_1_3_1">
+                                        <input type="checkbox" id="checkbox_1_3_2">
+                                        <input name="answer_1_3" type="radio" value="true" onclick="kontrolEt('answer_1_3')">
+                                        <input name="answer_1_3" type="radio" value="false" onclick="kontrolEt('answer_1_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_1_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_1_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_1_4_1">
+                                        <input type="checkbox" id="checkbox_1_4_2">
+                                        <input name="answer_1_4" type="radio" value="true" onclick="kontrolEt('answer_1_4')">
+                                        <input name="answer_1_4" type="radio" value="false" onclick="kontrolEt('answer_1_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_1_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_1_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_1_5_1">
+                                        <input type="checkbox" id="checkbox_1_5_2">
+                                        <input name="answer_1_5" type="radio" value="true" onclick="kontrolEt('answer_1_5')">
+                                        <input name="answer_1_5" type="radio" value="false" onclick="kontrolEt('answer_1_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_1_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_1_5')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_1_6_1">
+                                        <input type="checkbox" id="checkbox_1_6_2">
+                                        <input name="answer_1_6" type="radio" value="true" onclick="kontrolEt('answer_1_6')">
+                                        <input name="answer_1_6" type="radio" value="false" onclick="kontrolEt('answer_1_6')">
+                                    </div>
+                                    <div class="r5"><input name="Note_1_6" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_1_6')"></div>
+                                </div>
+                                <!-- 2. İnverter -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_1_1">
+                                        <input type="checkbox" id="checkbox_2_1_2">
+                                        <input name="answer_2_1" type="radio" value="true" onclick="kontrolEt('answer_2_1')">
+                                        <input name="answer_2_1" type="radio" value="false" onclick="kontrolEt('answer_2_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_2_1">
+                                        <input type="checkbox" id="checkbox_2_2_2">
+                                        <input name="answer_2_2" type="radio" value="true" onclick="kontrolEt('answer_2_2')">
+                                        <input name="answer_2_2" type="radio" value="false" onclick="kontrolEt('answer_2_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_3_1">
+                                        <input type="checkbox" id="checkbox_2_3_2">
+                                        <input name="answer_2_3" type="radio" value="true" onclick="kontrolEt('answer_2_3')">
+                                        <input name="answer_2_3" type="radio" value="false" onclick="kontrolEt('answer_2_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_4_1">
+                                        <input type="checkbox" id="checkbox_2_4_2">
+                                        <input name="answer_2_4" type="radio" value="true" onclick="kontrolEt('answer_2_4')">
+                                        <input name="answer_2_4" type="radio" value="false" onclick="kontrolEt('answer_2_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_5_1">
+                                        <input type="checkbox" id="checkbox_2_5_2">
+                                        <input name="answer_2_5" type="radio" value="true" onclick="kontrolEt('answer_2_5')">
+                                        <input name="answer_2_5" type="radio" value="false" onclick="kontrolEt('answer_2_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_5')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_6_1">
+                                        <input type="checkbox" id="checkbox_2_6_2">
+                                        <input name="answer_2_6" type="radio" value="true" onclick="kontrolEt('answer_2_6')">
+                                        <input name="answer_2_6" type="radio" value="false" onclick="kontrolEt('answer_2_6')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_6" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_6')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_2_7_1">
+                                        <input type="checkbox" id="checkbox_2_7_2">
+                                        <input name="answer_2_7" type="radio" value="true" onclick="kontrolEt('answer_2_7')">
+                                        <input name="answer_2_7" type="radio" value="false" onclick="kontrolEt('answer_2_7')">
+                                    </div>
+                                    <div class="r5"><input name="Note_2_7" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_2_7')"></div>
+                                </div>
+                                <!-- 3. DC Kablo -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_3_1_1">
+                                        <input type="checkbox" id="checkbox_3_1_2">
+                                        <input name="answer_3_1" type="radio" value="true" onclick="kontrolEt('answer_3_1')">
+                                        <input name="answer_3_1" type="radio" value="false" onclick="kontrolEt('answer_3_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_3_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_3_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_3_2_1">
+                                        <input type="checkbox" id="checkbox_3_2_2">
+                                        <input name="answer_3_2" type="radio" value="true" onclick="kontrolEt('answer_3_2')">
+                                        <input name="answer_3_2" type="radio" value="false" onclick="kontrolEt('answer_3_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_3_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_3_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_3_3_1">
+                                        <input type="checkbox" id="checkbox_3_3_2">
+                                        <input name="answer_3_3" type="radio" value="true" onclick="kontrolEt('answer_3_3')">
+                                        <input name="answer_3_3" type="radio" value="false" onclick="kontrolEt('answer_3_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_3_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_3_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_3_4_1">
+                                        <input type="checkbox" id="checkbox_3_4_2">
+                                        <input name="answer_3_4" type="radio" value="true" onclick="kontrolEt('answer_3_4')">
+                                        <input name="answer_3_4" type="radio" value="false" onclick="kontrolEt('answer_3_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_3_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_3_4')"></div>
+                                </div>
+                                <!-- 4. AC Panolar -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_4_1_1">
+                                        <input type="checkbox" id="checkbox_4_1_2">
+                                        <input name="answer_4_1" type="radio" value="true" onclick="kontrolEt('answer_4_1')">
+                                        <input name="answer_4_1" type="radio" value="false" onclick="kontrolEt('answer_4_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_4_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_4_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_4_2_1">
+                                        <input type="checkbox" id="checkbox_4_2_2">
+                                        <input name="answer_4_2" type="radio" value="true" onclick="kontrolEt('answer_4_2')">
+                                        <input name="answer_4_2" type="radio" value="false" onclick="kontrolEt('answer_4_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_4_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_4_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_4_3_1">
+                                        <input type="checkbox" id="checkbox_4_3_2">
+                                        <input name="answer_4_3" type="radio" value="true" onclick="kontrolEt('answer_4_3')">
+                                        <input name="answer_4_3" type="radio" value="false" onclick="kontrolEt('answer_4_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_4_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_4_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_4_4_1">
+                                        <input type="checkbox" id="checkbox_4_4_2">
+                                        <input name="answer_4_4" type="radio" value="true" onclick="kontrolEt('answer_4_4')">
+                                        <input name="answer_4_4" type="radio" value="false" onclick="kontrolEt('answer_4_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_4_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_4_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_4_5_1">
+                                        <input type="checkbox" id="checkbox_4_5_2">
+                                        <input name="answer_4_5" type="radio" value="true" onclick="kontrolEt('answer_4_5')">
+                                        <input name="answer_4_5" type="radio" value="false" onclick="kontrolEt('answer_4_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_4_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_4_5')"></div>
+                                </div>
+                                <!-- 5. Topraklama -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_5_1_1">
+                                        <input type="checkbox" id="checkbox_5_1_2">
+                                        <input name="answer_5_1" type="radio" value="true" onclick="kontrolEt('answer_5_1')">
+                                        <input name="answer_5_1" type="radio" value="false" onclick="kontrolEt('answer_5_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_5_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_5_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_5_2_1">
+                                        <input type="checkbox" id="checkbox_5_2_2">
+                                        <input name="answer_5_2" type="radio" value="true" onclick="kontrolEt('answer_5_2')">
+                                        <input name="answer_5_2" type="radio" value="false" onclick="kontrolEt('answer_5_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_5_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_5_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_5_3_1">
+                                        <input type="checkbox" id="checkbox_5_3_2">
+                                        <input name="answer_5_3" type="radio" value="true" onclick="kontrolEt('answer_5_3')">
+                                        <input name="answer_5_3" type="radio" value="false" onclick="kontrolEt('answer_5_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_5_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_5_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_5_4_1">
+                                        <input type="checkbox" id="checkbox_5_4_2">
+                                        <input name="answer_5_4" type="radio" value="true" onclick="kontrolEt('answer_5_4')">
+                                        <input name="answer_5_4" type="radio" value="false" onclick="kontrolEt('answer_5_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_5_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_5_4')"></div>
+                                </div>
+                                <!-- 6. Konstrüksiyon -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_6_1_1">
+                                        <input type="checkbox" id="checkbox_6_1_2">
+                                        <input name="answer_6_1" type="radio" value="true" onclick="kontrolEt('answer_6_1')">
+                                        <input name="answer_6_1" type="radio" value="false" onclick="kontrolEt('answer_6_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_6_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_6_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_6_2_1">
+                                        <input type="checkbox" id="checkbox_6_2_2">
+                                        <input name="answer_6_2" type="radio" value="true" onclick="kontrolEt('answer_6_2')">
+                                        <input name="answer_6_2" type="radio" value="false" onclick="kontrolEt('answer_6_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_6_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_6_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_6_3_1">
+                                        <input type="checkbox" id="checkbox_6_3_2">
+                                        <input name="answer_6_3" type="radio" value="true" onclick="kontrolEt('answer_6_3')">
+                                        <input name="answer_6_3" type="radio" value="false" onclick="kontrolEt('answer_6_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_6_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_6_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_6_4_1">
+                                        <input type="checkbox" id="checkbox_6_4_2">
+                                        <input name="answer_6_4" type="radio" value="true" onclick="kontrolEt('answer_6_4')">
+                                        <input name="answer_6_4" type="radio" value="false" onclick="kontrolEt('answer_6_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_6_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_6_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_6_5_1">
+                                        <input type="checkbox" id="checkbox_6_5_2">
+                                        <input name="answer_6_5" type="radio" value="true" onclick="kontrolEt('answer_6_5')">
+                                        <input name="answer_6_5" type="radio" value="false" onclick="kontrolEt('answer_6_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_6_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_6_5')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_6_6_1">
+                                        <input type="checkbox" id="checkbox_6_6_2">
+                                        <input name="answer_6_6" type="radio" value="true" onclick="kontrolEt('answer_6_6')">
+                                        <input name="answer_6_6" type="radio" value="false" onclick="kontrolEt('answer_6_6')">
+                                    </div>
+                                    <div class="r5"><input name="Note_6_6" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_6_6')"></div>
+                                </div>
+                                <!-- 7. Aydınlatma ve Kamera -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_1_1">
+                                        <input type="checkbox" id="checkbox_7_1_2">
+                                        <input name="answer_7_1" type="radio" value="true" onclick="kontrolEt('answer_7_1')">
+                                        <input name="answer_7_1" type="radio" value="false" onclick="kontrolEt('answer_7_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_2_1">
+                                        <input type="checkbox" id="checkbox_7_2_2">
+                                        <input name="answer_7_2" type="radio" value="true" onclick="kontrolEt('answer_7_2')">
+                                        <input name="answer_7_2" type="radio" value="false" onclick="kontrolEt('answer_7_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_3_1">
+                                        <input type="checkbox" id="checkbox_7_3_2">
+                                        <input name="answer_7_3" type="radio" value="true" onclick="kontrolEt('answer_7_3')">
+                                        <input name="answer_7_3" type="radio" value="false" onclick="kontrolEt('answer_7_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_4_1">
+                                        <input type="checkbox" id="checkbox_7_4_2">
+                                        <input name="answer_7_4" type="radio" value="true" onclick="kontrolEt('answer_7_4')">
+                                        <input name="answer_7_4" type="radio" value="false" onclick="kontrolEt('answer_7_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_5_1">
+                                        <input type="checkbox" id="checkbox_7_5_2">
+                                        <input name="answer_7_5" type="radio" value="true" onclick="kontrolEt('answer_7_5')">
+                                        <input name="answer_7_5" type="radio" value="false" onclick="kontrolEt('answer_7_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_5')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_6_1">
+                                        <input type="checkbox" id="checkbox_7_6_2">
+                                        <input name="answer_7_6" type="radio" value="true" onclick="kontrolEt('answer_7_6')">
+                                        <input name="answer_7_6" type="radio" value="false" onclick="kontrolEt('answer_7_6')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_6" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_6')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_7_7_1">
+                                        <input type="checkbox" id="checkbox_7_7_2">
+                                        <input name="answer_7_7" type="radio" value="true" onclick="kontrolEt('answer_7_7')">
+                                        <input name="answer_7_7" type="radio" value="false" onclick="kontrolEt('answer_7_7')">
+                                    </div>
+                                    <div class="r5"><input name="Note_7_7" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_7_7')"></div>
+                                </div>
+                                <!-- 8. GES TR -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_8_1_1">
+                                        <input type="checkbox" id="checkbox_8_1_2">
+                                        <input name="answer_8_1" type="radio" value="true" onclick="kontrolEt('answer_8_1')">
+                                        <input name="answer_8_1" type="radio" value="false" onclick="kontrolEt('answer_8_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_8_2_1">
+                                        <input type="checkbox" id="checkbox_8_2_2">
+                                        <input name="answer_8_2" type="radio" value="true" onclick="kontrolEt('answer_8_2')">
+                                        <input name="answer_8_2" type="radio" value="false" onclick="kontrolEt('answer_8_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_8_3_1">
+                                        <input type="checkbox" id="checkbox_8_3_2">
+                                        <input name="answer_8_3" type="radio" value="true" onclick="kontrolEt('answer_8_3')">
+                                        <input name="answer_8_3" type="radio" value="false" onclick="kontrolEt('answer_8_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_8_4_1">
+                                        <input type="checkbox" id="checkbox_8_4_2">
+                                        <input name="answer_8_4" type="radio" value="true" onclick="kontrolEt('answer_8_4')">
+                                        <input name="answer_8_4" type="radio" value="false" onclick="kontrolEt('answer_8_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"  id="checkbox_8_5_1">
+                                        <input type="checkbox"  id="checkbox_8_5_2">
+                                        <input name="answer_8_5" type="radio" value="true" onclick="kontrolEt('answer_8_5')">
+                                        <input name="answer_8_5" type="radio" value="false" onclick="kontrolEt('answer_8_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_5')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"  id="checkbox_8_6_1">
+                                        <input type="checkbox"  id="checkbox_8_6_2">
+                                        <input name="answer_8_6" type="radio" value="true" onclick="kontrolEt('answer_8_6')">
+                                        <input name="answer_8_6" type="radio" value="false" onclick="kontrolEt('answer_8_6')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_6" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_6')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"  id="checkbox_8_7_1">
+                                        <input type="checkbox"  id="checkbox_8_7_2">
+                                        <input name="answer_8_7" type="radio" value="true" onclick="kontrolEt('answer_8_7')">
+                                        <input name="answer_8_7" type="radio" value="false" onclick="kontrolEt('answer_8_7')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_7" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_7')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"  id="checkbox_8_8_1">
+                                        <input type="checkbox"  id="checkbox_8_8_2">
+                                        <input name="answer_8_8" type="radio" value="true" onclick="kontrolEt('answer_8_8')">
+                                        <input name="answer_8_8" type="radio" value="false" onclick="kontrolEt('answer_8_8')">
+                                    </div>
+                                    <div class="r5"><input name="Note_8_8" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_8_8')"></div>
+                                </div>
+                                <!-- 9. Saha Bak. -->
+                                <div class="row-block"></div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"  id="checkbox_9_1_1">
+                                        <input type="checkbox"  id="checkbox_9_1_2">
+                                        <input name="answer_9_1" type="radio" value="true" onclick="kontrolEt('answer_9_1')">
+                                        <input name="answer_9_1" type="radio" value="false" onclick="kontrolEt('answer_9_1')">
+                                    </div>
+                                    <div class="r5"><input name="Note_9_1" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_9_1')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox" id="checkbox_9_2_1">
+                                        <input type="checkbox" id="checkbox_9_2_2">
+                                        <input name="answer_9_2" type="radio" value="true" onclick="kontrolEt('answer_9_2')">
+                                        <input name="answer_9_2" type="radio" value="false" onclick="kontrolEt('answer_9_2')">
+                                    </div>
+                                    <div class="r5"><input name="Note_9_2" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_9_2')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"  id="checkbox_9_3_1">
+                                        <input type="checkbox"  id="checkbox_9_3_2">
+                                        <input name="answer_9_3" type="radio" value="true" onclick="kontrolEt('answer_9_3')">
+                                        <input name="answer_9_3" type="radio" value="false" onclick="kontrolEt('answer_9_3')">
+                                    </div>
+                                    <div class="r5"><input name="Note_9_3" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_9_3')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"   id="checkbox_9_4_1">
+                                        <input type="checkbox"   id="checkbox_9_4_2">
+                                        <input name="answer_9_4" type="radio" value="true" onclick="kontrolEt('answer_9_4')">
+                                        <input name="answer_9_4" type="radio" value="false" onclick="kontrolEt('answer_9_4')">
+                                    </div>
+                                    <div class="r5"><input name="Note_9_4" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_9_4')"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="check-box r4">
+                                        <input type="checkbox"   id="checkbox_9_5_1">
+                                        <input type="checkbox"   id="checkbox_9_5_2">
+                                        <input name="answer_9_5" type="radio" value="true" onclick="kontrolEt('answer_9_5')">
+                                        <input name="answer_9_5" type="radio" value="false" onclick="kontrolEt('answer_9_5')">
+                                    </div>
+                                    <div class="r5"><input name="Note_9_5" type="text" placeholder="Not..." onchange="kontrolEtNots('Note_9_5')"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="comments">
+                            <div class="comments-row">
+                                <p>YORUMLAR</p>
+                            </div>
+                            <div class="comment-inputs">
+                                <div class="left">
+                                    <label style="font-weight: 600;" for="6AY"></label>
+                                    <textarea style="pointer-events: none;" name="Cloumn_Note_Text_Left" id="Cloumn_Note_Text_Left" cols="30" rows="10"></textarea>
+                                </div>
+                                <div class="right">
+                                    <label style="font-weight: 600;" for="6AY"></label>
+                                    <textarea name="Cloumn_Note_Text" id="" cols="30" rows="10" onchange="kontrolEtNots('Cloumn_Note_Text')"></textarea>
+                                </div>
+                            </div>
+                            <div class="comment-bottom-inputs">
+                                <div class="left">
+                                    <div class="comment-row"></div>
+                                    <label style="font-weight: 600;  margin-top: 10px;" for="6AY">DÜZENLEYEN/İNCELEYEN</label>
+                                    <div class="com-row">
+                                        <label style="margin-bottom: 8px;" for="">DÜZENLEYEN:</label>
+                                        <input style="pointer-events: none;" name="Cloumn_Organizer_left" style="margin-bottom: 8px;" type="text">
+                                        <br>
+                                        <label for="">TARİH:</label>
+                                        <input style="pointer-events: none;" name="Cloumn_Organize_Date_left" type="text">
+                                    </div>
+
+                                    <div class="com-row">
+                                        <label for="">İNCELEYEN:</label>
+                                        <input style="pointer-events: none;" name="Cloumn_Looker_left" type="text">
+                                        <br>
+                                        <label for="">TARİH:</label>
+                                        <input style="pointer-events: none;" name="Cloumn_Looker_Date_left" type="text">
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <div class="comment-row"></div>
+                                    <label style="font-weight: 600; margin-top: 10px;" for="6AY">DÜZENLEYEN/İNCELEYEN</label>
+                                    <div class="com-row">
+                                        <label style="margin-bottom: 8px;" for="">DÜZENLEYEN:</label>
+                                        <input name="Cloumn_Organizer" style="margin-bottom: 8px;" type="text" onchange="kontrolEtNots('Cloumn_Organizer')">
+                                        <br>
+                                        <label for="">TARİH:</label>
+                                        <input class="date-inputs" name="Cloumn_Organize_Date" type="text" onchange="kontrolEtDates('Cloumn_Organize_Date')" maxlength="10">
+                                    </div>
+                                    <div class="com-row">
+                                        <label for="">İNCELEYEN:</label>
+                                        <input name="Cloumn_Looker" type="text" onchange="kontrolEtNots('Cloumn_Looker')">
+                                        <br>
+                                        <label for="">TARİH:</label>
+                                        <input class="date-inputs" name="Cloumn_Looker_Date" type="text" onchange="kontrolEtDates('Cloumn_Looker_Date')" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="submit_area">
+                        <button id="anket_submit_btn">Anketi Kaydet</button>
+                    </div>
+                    <div style="height: 50px;"></div>
+                </div>
+                <div style="display: none;" class="lists ariza_takip_container">
+                    <section class="table__body">
+                        <table id="ariza_takip_table2" class="table table-sortable">
+                            <thead>
+                                <th scope="col"><span>Santral İsmi</span></th>
+                                <th id="xx2" scope="col"><span>Arıza Tespit Tarihi</span></th>
+                                <th scope="col"><span>Arıza</span></th>
+                                <th scope="col"><span>Ekip Bilgilendirme Tarihi</span></th>
+                                <th scope="col"><span>Bilgi Verilen Kişi</span></th>
+                                <th scope="col"><span>Arıza Onarım Tarihi</span></th>
+                                <th scope="col"><span>Garanti Kapsam Durumu</span></th>
+                                <th scope="col"><span>Arıza Durumu</span></th>
+                            </thead>
+                            <tbody>
+                                <!-- {% for fail in fails %}
+                                <tr>
+                                    <td>{{fail.Fail_Central_Name}}</td>
+                                    <td>{{fail.Fail_Detection_Date}}</td>
+                                    <td>{{fail.Fail_Detail}}</td>
+                                    <td>{{fail.Fail_Team_Info_Date}}</td>
+                                    <td>{{fail.Fail_Information_Person}}</td>
+                                    <td>{{fail.Fail_Repair_Date}}</td>
+                                    <td>{{fail.Fail_Guaranteed}}</td>
+                                    <td>{{fail.Fail_Situation}}</td>
+                                </tr>
+                                {% endfor %} -->
+
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+                <div style="display: none;" class="bakim_takip_container">
+                    <section id="{{operation_care.id}}" class="table__body">
+                        <ul id="inventors_row">
+                        </ul>
+                        <table style="border-collapse: collapse;">
+                            <thead>
+
+                                <tr class="y">
+                                    <th colspan="2"></th>
+                                    <th colspan="6">
+                                        <span style="margin-right: 10px;">{{operation_care.Operation_Care_Company}}</span>
+                                        <span style="margin-right: 10px;">/</span>
+                                        <span style="margin-right: 10px;">{{operation_care.Operation_Care_Location}}</span>
+                                        <span style="margin-right: 10px;">/</span>
+                                        <span style="margin-right: 10px;">AC:  {{operation_care.Operation_Care_AC_Power}}</span>
+                                        <span style="margin-right: 10px;">-</span>
+                                        <span>DC:  {{operation_care.Operation_Care_DC_Power}}</span>
+
+                                    </th>
+                                    <th colspan="6">
+                                        <div  class="date_th">
+                                            <span style="width: 25%;">BAKIM TARİHİ </span>
+                                            <select style="width: 130px;" name="" id="bakim_date">
+                                               
+                                                <!-- <option value="">Tarih Seçin</option> -->
+                                                {% for poll in polls %}
+                                                <option value="{{poll.Poll_Date | date:'Y-m-d'}}">{{poll.Poll_Date | date:"d.m.Y"}}</option>
+                                                {% endfor %}
+                                                
+                                            </select>
+                                        </div>
+                                    </th>
+                                </tr>
+                                <tr class="x">
+                                    <th>İNV NO</th>
+                                    <th>YÖN</th>
+                                    <th style="width: 50px;">STRG NU</th>
+                                    <th>PNL GÜCÜ</th>
+                                    <th>VOC</th>
+                                    <th>PNL MRK</th>
+                                    <th>PNL SY</th>
+                                    <th>İZOLASYON</th>                                    
+                                    <th>+</th>
+                                    <th>-</th>
+                                    <th>TOPLAM V</th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tbody class="inventor_table_body">                                
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </main>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'operation_care_detail.js' %}"></script>
+
+{% endblock %}

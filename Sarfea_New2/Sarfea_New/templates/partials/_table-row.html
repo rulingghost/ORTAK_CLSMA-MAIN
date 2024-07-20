@@ -1,0 +1,33 @@
+{% load static %}
+
+<tr> 
+    <td><button type="button" class="edit-project-btn button2" style= "background: none; border:none;"><a href= "{% url 'project_edit' project_name=x.ProjectName %}"><i id="edit-text" class="fa-solid fa-pen-to-square"></i></button>  </td>
+    <td></a><a href="{% url 'project_details' project_id=x.id %}">{{ x.ProjectName }}</a></td>
+    <td>
+        {%if x.Location %}
+         {{ x.Location }}
+        {% endif %}
+    </td>
+    <td>
+        {%if x.AC_Power %}
+         {{ x.AC_Power }} kWe
+        {% endif %}
+    </td>
+    <td>
+        {%if x.DC_Power %}
+         {{ x.DC_Power }} kWp
+        {% endif %}
+    </td>
+    <td>
+        {%if x.Cost_NotIncludingKDV %}
+        {{ x.Cost_NotIncludingKDV }} 
+        {% endif %}
+    </td>
+    <td>
+        {%if x.Terrain_Roof %}
+        {{x.Terrain_Roof}}
+        {% endif %}
+    </td>
+    <td>{{ x.StartDate|date:"d/m/Y" }}</td>
+    <td>{{ x.Situation }}</td>
+</tr>

@@ -1,0 +1,194 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"/> -->
+<link rel="stylesheet" href="{% static 'details_projects.css' %}" />
+<link rel="stylesheet" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+
+<style>
+  ::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  #paying-firma-add-btn{
+    padding: 0 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    font-size: 15px;
+  }
+</style>
+
+{% endblock %} {% block title %} Project Add {% endblock %} {% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <div class="nav-bar">
+      <div class="nav-span">
+        <div class="backBtn">
+          <a href="{% url 'projects' %}">
+            <button id="backBtn" class="button-project">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </a>
+          <span> </span>
+        </div>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="container projeBaslatContainer">
+        <div class="title">Proje Ekle</div>
+        <form id="my-form" action="{% url 'project_add' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="form" />
+
+          <div class="user-details">
+
+            <div class="input-box" id="CompanyNameInput">
+              <span id="firma_adi_span" class="details">Firma Adı*<button type="button" id="paying-firma-add-btn" class="paying-firma-add-btn">
+                  <i class="fa-solid fa-plus"></i></button></span>
+              <div class="dropdown-container">
+                <input autocomplete= 'off' type="text" id="id_CompanyName" name="CompanyName" class="myInput" placeholder="Firma Adını Seçiniz" data-dropdown="dropdown1"/>
+                <div id="dropdown1" class="dropdown-content">
+                  {% for x in client %}
+                  <span value="{{x.id}}" class="dropdown-item"
+                    >{{x.CompanyName_Clients}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="input-box" id="ProjectNameInput">
+              <span id="proje_adi_span" class="details">Proje Adı*</span>
+              <input autocomplete= 'off' type="text" name="ProjectName" maxlength="63" id="id_ProjectName" autocomplete="off">
+            </div>
+
+            <div
+              class="input-box"
+              id="ProjectCodeInput"
+            >
+              <span id="proje_kodu_span" class="details">Proje Kodu*</span>
+              {{ form.ProjectCode }} 
+            </div>
+
+            
+
+            <div class="input-box">
+              <span class="details">İşi Üstlenen Firma</span>
+              {{ form.CompanyUndertakingWork }}
+            </div>
+
+            <div class="input-box">
+              <span id="konum_label" class="details">Konum</span>
+              <div class="dropdown-container">
+                <input
+                  type="text"
+                  id="id_Location"
+                  name="Location"
+                  class="myInput"
+                  placeholder="Konum Seçiniz"
+                  data-dropdown="dropdown2"
+                  autocomplete="off"
+                />
+                <div id="dropdown2" class="dropdown-content">
+                  {% for x in locations %}
+                  <span value="{{x.Location}}" class="dropdown-item"
+                    >{{x.Location}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="input-box">
+              <span class="details">İş Bedeli - KDV Hariç ($)</span>
+              <input class="coc-input" type="text" name="Cost_NotIncludingKDV" id="id_Cost_NotIncludingKDV" step="0.0001" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">AC Güç (kWe)</span>
+              <input class="coc-input" type="text" name="AC_Power" id="id_AC_Power" step="0.0001" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">DC Güç (kWp)</span>
+              <input class="coc-input" type="text" name="DC_Power" id="id_DC_Power" step="0.0001" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Hesaplanan Maliyet - KDV Hariç ($)</span>
+              <input
+                class="coc-input"
+                type="text"
+                name="CalculatedCost_NotIncludingKDV"
+                id="id_CalculatedCost_NotIncludingKDV"
+                step="0.0001"
+                autocomplete="off"
+
+              />
+            </div>
+
+            <div class="input-box">
+              <span class="details"> işin Başlama Tarihi</span>
+              <input                
+                id="tarih"
+                type="text"
+                name="StartDate"
+                placeholder="Tarih Seçiniz" maxlength="10"
+              />
+            </div>
+            <div class="input-box">
+              <span class="details">Bitirme Tarihi</span>
+              <input
+                id="tarih2"
+                type="text"
+                name="FinishDate"
+                placeholder="Tarih Seçiniz" maxlength="10"
+              />
+            </div>
+            <div class="input-box">
+              <span class="details">KDV Oranı (%)</span>
+              {{form.KDV_Rate}}
+            </div>
+            <div class="input-box">
+              <span class="details">Arazi/Çatı</span>
+              {{form.Terrain_Roof}}
+            </div>
+            <div class="input-box">
+              <span class="details">Teşvikli (Evet/Hayır)</span>
+              {{form.Incentive}}
+            </div>
+          </div>
+          <div class="button">
+            <input id="project-create-btn" type="submit" value="Proje Ekle" />
+          </div>
+        </form>
+      </div>
+
+      <div class="window clientFirmaAddWindow">
+        <div id="firma_container" class="container">
+          <h3 id="clientFirmaAdd-modal" class="modal-kapat">X</h3>
+          <div class="title">Firma Ekle</div>
+          <form id="firma_form" action="{% url 'project_add' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="client_form" />
+
+            <div class="user-details">
+              <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+                <span id="firma_add_label" class="details">Firma Adı*</span>
+                {{ client_form.CompanyName_Clients }}
+              </div>
+            </div>
+            <div class="button">
+              <input id="firma_add_btn" type="submit" value="Kaydet" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block js_files %}
+  <script src="{% static 'functions.js' %}"></script> 
+  <script src="{% static 'project_add.js' %}"></script> 
+  {% endblock %} 
+</div>

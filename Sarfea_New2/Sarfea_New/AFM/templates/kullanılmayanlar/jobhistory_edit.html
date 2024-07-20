@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+    {% load static %}
+    {% load custom_tags %}
+
+    {% block css_files %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <link rel="stylesheet" href="{% static 'all_style.css' %}">
+    <link rel="stylesheet" href="{% static 'details_projectsss.css' %}">
+    <link rel="stylesheet" href="{% static 'center.css' %}">
+    <link rel="stylesheet" href="{% static 'sec-inputs.css' %}">
+
+    <style>
+      ::-webkit-scrollbar {
+  width: 0 !important;
+}
+      .paying-firma-add-btn {
+    margin-left: 7px;
+    padding: 0px 4px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+} 
+    </style>
+    {% endblock %}
+    
+    {% block title %} Job History Edit {% endblock %}
+    {% block content %} 
+<div class="body-div">
+    {% include 'partials/_left_nav_bar.html' %}
+<div class="right-menu">
+    <div class="nav-bar">
+        <div class="nav-span">
+            <div class="backBtn">
+                <a href="{% url 'realized_cost' project_name=jobhistory_edit.ProjectName_JobHistory %}">
+                    <button id="backBtn" class="button-project">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </a>
+                <span>
+                    </span>
+            </div>
+            <span>{{jobhistory_edit.CompanyName_JobHistory}}</span>
+            <span></span>
+        </div>
+    </div>
+    <div class="center">
+      <div class="container">
+          <div class="title">Yapılan İş Güncelle</div>
+          <form id="my-form" action="{% url 'jobhistory_edit' jobhistory_id=jobhistory_edit.id %}" method="post">
+            {% csrf_token %}
+            <div class="user-details">
+
+              <div style="display:none;" class="input-box" name="ProjectName_JobHistory">
+                <span class="details">Proje Adı</span>
+                <input  name="ProjectName_JobHistory" value="{{ jobhistory_edit.ProjectName_JobHistory }}">
+              </div>
+              <div class="input-box">
+                <span id="is_yapan_firma_span" class="details">İş Yapan Firma*</span>
+                <select name="CompanyName_FromJobMade_JobHistory" id="id_CompanyName_FromJobMade_JobHistory">
+                  {% for x in my_company %}
+                    {% if jobhistory_edit.CompanyName_FromJobMade_JobHistory == x.MyCompanyName  %}
+                      <option value="{{x.id}}" selected>{{ jobhistory_edit.CompanyName_FromJobMade_JobHistory }}</option>
+                    {% endif %}
+                  {% endfor %}
+                  {% for x in my_company %}
+                    {% if jobhistory_edit.CompanyName_FromJobMade_JobHistory != x.MyCompanyName  %}
+                      <option value="{{x.id}}">{{x.MyCompanyName}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="input-box " id="CompanyName_Job_JobHistoryInput">
+                <span id="is_yapilan_firma_span" class="details">İş Yapılan Firma*</span>
+                <div class="dropdown-container">
+                    <input autocomplete= 'off' value="{{jobhistory_edit.CompanyName_Job_JobHistory}}" type="text" id="id_CompanyName_Job_JobHistory" name="CompanyName_Job_JobHistory" class="myInput" placeholder="Firma Adını Seçiniz" data-dropdown="dropdown1">
+                  <div id="dropdown1" class="dropdown-content">
+                        {% for x in supplier %}
+                            <span value="{{x.id}}" class="dropdown-item">{{x.CompanyName_Supplier}}</span>
+                        {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="input-box">
+                  <span class="details">Cinsi</span>
+                  {{ edit_form.ExpensDetails_JobHistory }}
+              </div>
+              <div class="input-box">
+                  <span class="details">Tutar (₺)</span>
+                  <input autocomplete= 'off' class="coc-input" type="text" name="Amount_JobHistory" id="id_Amount_JobHistory" step="0.0001" value="{{jobhistory_edit.Amount_JobHistory}}" placeholder="0.00">
+              </div>
+              <div class="input-box">
+                  <span class="details">Dolar Kuru (₺)</span>
+                  {{ edit_form.Dollar_Rate_JobHistory }}
+              </div>
+              <div class="input-box">
+                  <span class="details">Fatura Numarası</span>
+                  {{ edit_form.Invoice_No_JobHistory }}
+              </div>
+              <div class="input-box">
+                  <span class="details">Tarih</span>
+                  <input 
+                  class="coc-input" 
+                  id="id_Date_JobHistory" 
+                  type="text" 
+                  name="Date_JobHistory" 
+                  value="{{ jobhistory_edit.Date_JobHistory|date:'Y-m-d' }}" placeholder="01.01.2000" maxlength="10"/>
+              </div>
+              <div class="input-box">
+                <span class="details">Kur Saati</span>
+                <select name="" id="kur-time">
+                  <option value="secenek1">Kur Saati Seçiniz</option>
+                  <option value="secenek2">15:30'dan Önce</option>
+                  <option value="secenek3">15:30'dan Sonra</option>
+                </select>
+            </div>
+            </div>
+            <div class="button">
+              <input id="project-create-btn" type="submit" value="Kaydet" />
+            </div>
+          </form>
+      </div>
+      
+</div>
+</div>
+{% endblock %} 
+
+  {% block js_files %} 
+  <script src="{% static 'functions.js' %}"></script> 
+  <script src="{% static 'jophistory_edit.js' %}"></script> 
+ 
+
+
+<script>
+         
+    var kurInput = document.querySelector("#id_Dollar_Rate_JobHistory");
+    var dateForKur = document.querySelector("#id_Date_JobHistory");   
+    var timeForKur = document.querySelector("#kur-time");              
+    var buyingValues ; 
+    var tarih ;
+    
+    //**************      KUR HESAPLAMA      ********************
+    
+    
+    var dosyaURL = "{% static 'kur.json' %}";
+   //selection seçimine göre yapılacak işlem
+          
+          timeForKur.addEventListener('change', function () {
+              // Seçilen değeri al
+              const secilenDeger = timeForKur.value;
+             
+              // Seçilen değere göre işlem yap
+              if (secilenDeger === 'secenek1') {
+                  
+              } else if (secilenDeger === 'secenek2') {
+                  tarih = birGunOncekiTarih(dateForKur.value);
+                  console.log(tarih);
+                  fetch(dosyaURL)
+                  .then(response => response.json())
+                  .then(data => {
+                    try {
+                      // Hedef tarihi kullanarak veriyi filtrele
+                      const hedefVeri = data.items.find(item => item.Tarih === tarih);
+                
+                      if (hedefVeri) {
+                        // TP_DK_USD_S alanını konsola yazdır
+                        //console.log(hedefVeri.TP_DK_USD_S);
+                        kurInput.value = hedefVeri.TP_DK_USD_S
+                        console.log(hedefVeri.TP_DK_USD_S);
+                      } else {
+                        console.log('Belirtilen tarihe ait veri bulunamadı.');
+                      }
+                    } catch (parseHata) {
+                      console.error('JSON parse hatası:', parseHata);
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Dosya okuma hatası:', err);
+                  });
+              ////-----------------------------------------
+                      
+              } else if (secilenDeger === 'secenek3') {
+                //console.log(dateForKur.value);
+                  tarih = tarihFormatiniDegistir(dateForKur.value);    
+                  console.log(tarih);
+                  fetch(dosyaURL)
+                  .then(response => response.json())
+                  .then(data => {
+                    try {
+                      // Hedef tarihi kullanarak veriyi filtrele
+                      const hedefVeri = data.items.find(item => item.Tarih === tarih);
+                
+                      if (hedefVeri) {
+                        // TP_DK_USD_S alanını konsola yazdır
+                        console.log(hedefVeri.TP_DK_USD_S);
+                        kurInput.value = hedefVeri.TP_DK_USD_S
+                      } else {
+                        console.log('Belirtilen tarihe ait veri bulunamadı.');
+                      }
+                    } catch (parseHata) {
+                      console.error('JSON parse hatası:', parseHata);
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Dosya okuma hatası:', err);
+                  });
+              }
+          });
+    
+ </script>
+  
+  {% endblock %}
+
+  

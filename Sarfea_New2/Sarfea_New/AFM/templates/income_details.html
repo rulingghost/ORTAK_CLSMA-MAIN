@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_files %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'all_style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'sec-inputs.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'income_details.css' %}">
+<style>
+   :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+</style>
+
+{% endblock %}
+{% block title %} Income Details {% endblock %}
+{% block content %}
+<div class="body-div">
+
+  <div class="window income-add-window">
+    <div class="container">
+      <h3 id="income-X" class="close-window">X</h3>
+      <div class="title">Gelir Ekle</div>
+      <form id="income_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="income_form">
+        <div class="user-details">
+
+
+          <div style="display:none;" class="input-box" id="ProjectName_IncomesInput">
+            <span class="details">Proje Adı</span>
+            <div class="dropdown-container">
+              <input value="{{project.id}}" type="text" id="id_ProjectName_Incomes" class="not_this"
+                name="Project_Incomes" placeholder="Proje Adını Seçiniz">
+
+            </div>
+          </div>
+          <div class="input-box">
+            <span id="odeme_yapan_firma_span" class="details">Ödeme Yapan Firma*<button type="button"
+                id="paying-company-add-btn" class="paying-company-add-btn"><i
+                  class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete='off' type="text" id="id_CompanyName_Pay_Incomes" name="CompanyName_Pay_Incomes"
+                class="myInput  need_id" placeholder="Firma Adını Seçiniz" data-dropdown="income_dropdown1">
+
+              <div id="income_dropdown1" class="dropdown-content client-dropdown">
+
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" name="CompanyName_ReceivePayment_Incomes">
+            <span class="details">Alıcı Firma</span>
+            <select name="CompanyName_ReceivePayment_Incomes" id="id_CompanyName_ReceivePayment_Incomes">
+              <option value="Sovo">Sovo</option>
+              <option value="Tozoğlu">Tozoğlu</option>
+            </select>
+            <!-- {{ incomes_form.CompanyName_ReceivePayment_Incomes }} -->
+          </div>
+
+          <div class="input-box" name="Amount_Incomes">
+            <span class="details">Alınan Miktar (₺)</span>
+            <input autocomplete='off' class="coc-input formatInputs" type="text" name="Amount_Incomes"
+              id="id_Amount_Incomes" step="0.0001" placeholder="0.00">
+          </div>
+
+          <div class="input-box" name="Dollar_Rate_Incomes">
+            <span class="details">Dolar Kuru (₺)</span>
+            <input type="text" class="coc-input formatInputs" name="Dollar_Rate_Incomes" id="id_Dollar_Rate_Incomes" autocomplete="off">
+            <!-- {{ incomes_form.Dollar_Rate_Incomes }} -->
+          </div>
+          <div class="input-box" id="chek_date_box">
+            <span class="details">Tarih </span>
+            <input class="coc-input date-inputs" type="text" name="ChekDate_Incomes" id="id_ChekDate_Incomes"
+              placeholder="01.01.2000" maxlength="10">
+          </div>
+          <div class="input-box" name="PaymentType_Incomes">
+            <span id="payment_type_label" class="details">Ödeme Türü</span>
+            {{ incomes_form.PaymentType_Incomes }}
+          </div>          
+          <div class="input-box">
+            <span class="details">Kur Saati</span>
+            <select name="" id="income-kur-time">
+              <option value="secenek1">Kur Saati Seçiniz</option>
+              <option value="secenek2">15:30'dan Önce</option>
+              <option value="secenek3">15:30'dan Sonra</option>
+            </select>
+          </div>
+          <div class="input-box chek-last-date-box" id="id_boxLastChekDate_Incomes">
+            <span class="details">Çek Son Kullanma Tarihi </span>
+            <input class="coc-input date-inputs" type="text" name="LastChekDate_Incomes" id="id_LastChekDate_Incomes"
+              placeholder="01.01.2000" maxlength="10">
+          </div>
+          
+
+        </div>
+        <div class="button">
+          <input id="income-create-btn" type="button" value="Gelir Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window client-add-window">
+    <div style="width: 400px" id="client_container" class="container">
+      <h3 id="client-X" class="close-window clientx">X</h3>
+      <div class="title">Firma Ekle</div>
+      <form id="firma_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="client_form" />
+
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+            <span id="firma_add_label" class="details">Firma Adı*</span>
+            <input id="id_CompanyName_Clients" name="CompanyName_Clients" type="text" />
+          </div>
+        </div>
+        <div class="button">
+          <input id="firma_submit_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="right-menu">
+    <main class="table" id="customers_table">
+      <section class="table__header">
+        <a href="{% url 'project_details' project_id=project.id %}">
+          <button style="color: rgb(47, 65, 79);" class="back-button">
+            <i class="fa-solid fa-angles-left"></i>
+          </button>
+        </a>
+        <p id="{{project.id}}" class="project_id">{{project.ProjectName}}</p>
+        <p id="income_p">{{project.Cost_NotIncludingKDV}}</p>
+        
+        <button style="display: none;"  class="add-hamburger-button"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <div class="export__file">          
+          <div class="input-group searchForNav">
+            <input type="search" placeholder="Gelir Ara...">
+            <img src="{% static 'images/search.png' %}" alt="">
+          </div>
+          <button class="income-add-btn">Gelir Ekle</button>
+          
+        </div>
+      </section>
+      <section class="table__body">
+        <table id="income_table">
+          <thead>
+            <tr>
+              <th><span></span></th>
+              <th>Alıcı Firma<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Ödeme Yapan Firma<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Ödeme Türü<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Tutar(TL)<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Kur<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Tutar(USD)<span class="icon-arrow">&UpArrow;</span></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot class="tfoots">
+            <tr>
+              <td colspan="4"></td>
+              <td><b>Toplam :</b></td>
+              <td style="font-weight: 600;"><span id="tl_td">0.00₺</span></td>              
+              <td style="font-weight: 600;"><span id="usd_td">0.00$</span></td>   
+                       
+              <td class="margin_td"><b>Kalan :</b></td>
+              <td style="font-weight: 600;"><span id="result_td">0.00₺</span></td>
+            </tr>
+          </tfoot>
+        </table>
+        <div style="height: 71px; width: 100%;"></div>
+      </section>
+    </main>
+
+  </div>
+
+</div>
+</div>
+{% endblock %}
+{% block js_files %}
+
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'income_details.js' %}"></script>
+
+
+{% endblock %}

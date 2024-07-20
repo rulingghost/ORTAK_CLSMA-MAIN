@@ -1,0 +1,345 @@
+{%extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'homee.css' %}">  -->
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" href="{% static 'home_style.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+<style>
+  :root {
+      --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+
+
+
+  #table thead th:not(:nth-child(2)),
+  #table tbody td:not(:nth-child(2)) {
+    text-align: center;
+  }
+
+  #table thead th:nth-child(2) {
+    padding-left: 20px;
+  }
+
+  .lists {
+    overflow-y: scroll;
+  }
+
+  table thead th {
+    cursor: pointer;
+  }
+
+  table thead th span {
+    position: relative;
+  }
+
+  thead th span::after {
+    content: '';
+    position: absolute;
+    left: -18px;
+    top: 60%;
+    border-style: solid;
+    border-top-width: 10px;
+    border-right-width: 5px;
+    border-left-width: 5px;
+    border-color: #000 transparent transparent transparent;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+  }
+</style>
+<style>
+  .progress {
+    background: #ddd;
+    height: 20px;
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  .progress-done {
+    font-family: sans-serif;
+    font-weight: bolder;
+    color: #fff;
+    height: 100%;
+    background: rgb(0, 119, 255);
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    width: 0;
+    transition: width .5s ease;
+  }
+
+  .progress-done2 {
+    font-family: sans-serif;
+    font-weight: bolder;
+    color: #fff;
+    height: 100%;
+    background: rgb(0, 119, 255);
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    width: 0;
+    transition: width .5s ease;
+  }
+
+  .row.bill {
+    display: flex;
+  }
+
+  .sell-bill {
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .buy-bill {
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .bill-title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .bill-title span {
+    color: #505050;
+    font-size: 13px;
+  }
+
+  .bill-comment {
+    margin-right: auto;
+
+  }
+
+  .bill-comment p {
+    color: #505050;
+    font-size: 14px;
+  }
+
+  .bill-bars {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bar-cash-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .bar-cash-info span {
+    color: #505050;
+    font-size: 13px;
+  }
+.sidebar-links li.anasayfa_li {
+  background: var(--main-color-dark);
+}
+.p-content{
+  position: relative;
+  padding-left: 30px;
+}
+.p-content::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+.bg-1::before {
+  background-color: #696969;
+}
+.bg-2::before {
+  background-color: #808080;
+}
+.bg-3::before {
+  background-color: #A9A9A9;
+}
+.bg-4::before {
+  background-color: #C0C0C0;
+}
+.bg-5::before {
+  background-color: #D3D3D3;
+}
+
+
+
+/* .top-menu button {
+    margin-right: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    height: 100%;
+    background-color: #fff5;
+    padding: 0 1rem;
+    border-radius: 2rem;
+    border: none;
+    transition: 0.2s;
+} */
+</style>
+{% endblock %}
+
+{% block title %} Home Page {% endblock %}
+{% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  
+  <div class="right-menu">
+    <div style="display: none;" class="top-menu">
+      <button style="display: none;" class="hamburger-button"><i class="fa-solid fa-bars"></i></button>
+      <h3 style="margin: auto;">Anasayfa</h3>
+    </div>
+    {% if 'admin' in user_groups|lower or 'proje grubu' in user_groups|lower %}
+
+    <div style="height: 38%;" class="row">
+      <canvas style="width: 100%; height: 100%;" id="nakit_akis_grafik"></canvas>
+    </div>
+
+    <div style="height: 20%;" class="row bill">
+      <div style="width: 50%;" class="sell-bill">
+        <div class="bill-title">
+          <h3>Satış Faturaları</h3>
+          <span>Son 30 Gün</span>
+        </div>
+        <div class="bill-bars">
+          <div class="bar-cash-info">
+            <p><b>$ <span id="veris_odenen"></span></b> <span>Ödenen</span></p>
+            <p><b>$ <span id="veris_kalan"></span></b> <span>Kalan</span></p>
+          </div>
+          <div class="progress">
+            <div class="progress-done">
+            </div>
+          </div>
+        </div>
+        <div class="bill-comment">
+          <p></p>
+        </div>
+      </div>
+      <div style="width: 50%;" class="buy-bill">
+        <div class="bill-title">
+          <h3>Alış Faturaları</h3>
+          <span>Son 30 Gün</span>
+        </div>
+        <div class="bill-bars">
+          <div class="bar-cash-info">
+            <p><b>$ <span id="alis_odenen"></span></b> <span>Ödenen</span></p>
+            <p><b>$ <span id="alis_kalan"></span></b> <span>Kalan</span></p>
+          </div>
+          <div class="progress">
+            <div class="progress-done2">
+            </div>
+          </div>
+        </div>
+        <div class="bill-comment">
+          <p></p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 38%;" class="two-chart">
+      <div class="coll">
+        <canvas style="width: 100%; height: 100%;" id="kar_zarar_grafik"></canvas>
+    </div>
+      <div class="coll pie-div">
+        <div style="width: 50%; height: 100%;" class="data_div">
+          <h3>Toplam Harcamalar</h3>
+          
+          <div class="data_div_items">
+            <p class="bg-1 p-content gider_detay1-1"></p>
+            <p class="gider_detay1-2"></p>
+          </div>
+          <div class="data_div_items">
+            <p class="bg-2 p-content gider_detay2-1"></p>
+            <p class="gider_detay2-2"></p>
+          </div>
+          <div class="data_div_items">
+            <p class="bg-3 p-content gider_detay3-1"></p>
+            <p class="gider_detay3-2"></p>
+          </div>
+          <div class="data_div_items">
+            <p class="bg-4 p-content gider_detay4-1"></p>
+            <p class="gider_detay4-2"></p>
+          </div>
+          <div class="data_div_items">
+            <p class="bg-5 p-content gider_detay5-1">Diğer</p>
+            <p class="gider_detay5-2"></p>
+          </div>
+
+
+
+
+
+        </div>
+        <div style="width: 50%; height: 100%;" class="chart_div">
+          <canvas style="width: 100%; height: 100%;" id="harcama_grafik"></canvas>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if 'rapor grubu' in user_groups|lower %}
+
+    <div style="height: 38%;" class="rapor_table">
+      <table>
+        <thead>
+          <tr>
+            
+            <th>Proje Adı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+            <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+            <th>İş Bedeli<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+            <th>Durum<span class="icon-arrow">&UpArrow;</span></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+{% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'home.js' %}"></script>
+<script>
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}

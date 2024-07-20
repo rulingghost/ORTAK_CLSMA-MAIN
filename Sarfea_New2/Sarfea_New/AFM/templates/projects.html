@@ -1,0 +1,485 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'projects.css' %}" />
+
+
+<style>
+   :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+  .sidebar-links li.projeler_li {
+  background: var(--main-color-dark);
+}
+</style>
+
+{% endblock %} {% block title %} Projects {% endblock %} {% block content %}
+<div class="body-div">
+  <div class="window project-add-window">
+    <div class="container">
+      <h3 id="project-X" class="close-window">X</h3>
+      <div class="title">Proje Ekle</div>
+      <form id="project_add_form" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="form" />
+
+        <div class="user-details">
+          <div class="input-box" id="CompanyNameInput">
+            <span id="proje_firma_span" class="details">Firma Adı*<button type="button" id="paying-firma-add-btn"
+                class="paying-company-add-btn">
+                <i class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_CompanyName" name="Company_id" class="myInput  need_id"
+                placeholder="Firma Adını Seçiniz" data-dropdown="project-add-dropdown1" />
+              <div id="project-add-dropdown1" class="dropdown-content client-dropdown">
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" id="ProjectNameInput">
+            <span id="proje_span" class="details">Proje Adı*</span>
+            <input autocomplete="off" type="text" name="ProjectName" maxlength="63" id="id_ProjectName"
+              autocomplete="off" />
+          </div>
+          <div class="input-box" id="ProjectCodeInput">
+            <span id="proje_kodu_span" class="details">Proje Kodu*</span>
+            <input id="id_ProjectCode" name="ProjectCode" type="text" />
+          </div>
+
+          <div class="input-box">
+            <span class="details">İşi Üstlenen Firma</span>
+            <select name="CompanyUndertakingWork" id="">
+              <option value="Sovo">Sovo</option>
+              <option value="Tozoğlu">Tozoğlu</option>
+            </select>
+          </div>
+
+          <div class="input-box">
+            <span id="konum_label" class="details">Konum</span>
+            <div class="dropdown-container">
+              <input type="text" id="id_Location" name="Location" class="myInput" placeholder="Konum Seçiniz"
+                data-dropdown="project-add-dropdown2" autocomplete="off" />
+              <div id="project-add-dropdown2" class="dropdown-content">
+                {% for x in locations %}
+                <span value="{{x.Location}}" class="dropdown-item">{{x.Location}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span class="details">İş Bedeli - KDV Hariç ($)</span>
+            <input class="coc-input formatInputs" type="text" name="Cost_NotIncludingKDV" id="id_Cost_NotIncludingKDV"
+              step="0.0001" autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">AC Güç (kWe)</span>
+            <input class="coc-input formatInputs" type="text" name="AC_Power" id="id_AC_Power" step="0.0001"
+              autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">DC Güç (kWp)</span>
+            <input class="coc-input formatInputs" type="text" name="DC_Power" id="id_DC_Power" step="0.0001"
+              autocomplete="off" />
+          </div>
+          <div class="input-box">
+            <span class="details">Hesaplanan Maliyet - KDV Hariç ($)</span>
+            <input class="coc-input formatInputs" type="text" name="CalculatedCost_NotIncludingKDV"
+              id="id_CalculatedCost_NotIncludingKDV" step="0.0001" autocomplete="off" />
+          </div>
+
+          <div class="input-box">
+            <span class="details"> İşin Başlama Tarihi</span>
+            <input class="date-inputs" id="tarih" type="text" name="StartDate" placeholder="Tarih Seçiniz"
+              maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">Bitirme Tarihi</span>
+            <input class="date-inputs" id="tarih2" type="text" name="FinishDate" placeholder="Tarih Seçiniz"
+              maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">KDV Oranı (%)</span>
+            <input id="id_KDV_Rate" name="KDV_Rate" type="text" />
+          </div>
+          <div class="input-box">
+            <span class="details">Arazi/Çatı</span>
+            <select name="Terrain_Roof" id="">
+              <option value="Arazi">Arazi</option>
+              <option value="Çatı">Çatı</option>
+            </select>
+          </div>
+
+
+          <div class="input-box">
+            <span class="details">Teşvikli (Evet/Hayır)</span>
+            <select name="Incentive" id="">
+              <option value="true">Evet</option>
+              <option value="false">Hayır</option>
+            </select>
+          </div>
+          <div class="input-box">
+            <span class="details">Durum</span>
+            <select name="Situation" id="id_Situation">
+              <option value="Onay Bekliyor">Onay Bekliyor</option>
+              <option value="Devam Ediyor">Devam Ediyor</option>
+              <option value="Tamamlandı">Tamamlandı</option>
+
+            </select>
+          </div>
+        </div>
+        <div class="button">
+          <input id="project-create-btn" type="button" value="Proje Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window income-add-window">
+    <div class="container">
+      <h3 id="income-X" class="close-window">X</h3>
+      <div class="title">Gelir Ekle</div>
+      <form id="income_add_form"  method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="income_form" />
+        <div class="user-details">
+          <div class="input-box" id="ProjectName_IncomesInput">
+            <span id="income_proje_span" class="details">Proje Adı*</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ProjectName_Incomes" name="Project_Incomes"
+                class="myInput  need_id" placeholder="Proje Adını Seçiniz" data-dropdown="income_dropdown2" />
+
+              <div id="income_dropdown2" class="dropdown-content projects_dropdown">
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span id="income_firma_span" class="details">Ödeme Yapan Firma*<button type="button"
+                id="paying-company-add-btn" class="paying-company-add-btn"><i
+                  class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete='off' type="text" id="id_CompanyName_Pay_Incomes" name="CompanyName_Pay_Incomes"
+                class="myInput need_id" placeholder="Firma Adını Seçiniz" data-dropdown="income_dropdown1">
+
+              <div id="income_dropdown1" class="dropdown-content client-dropdown">
+
+              </div>
+            </div>
+          </div>          
+
+          <div class="input-box" name="CompanyName_ReceivePayment_Incomes">
+            <span class="details">Alıcı Firma</span>
+            <select name="CompanyName_ReceivePayment_Incomes" id="">
+              <option value="Sovo">Sovo</option>
+              <option value="Tozoğlu">Tozoğlu</option>
+            </select>
+          </div>
+
+          <div class="input-box" name="Amount_Incomes">
+            <span class="details">Alınan Miktar (₺)</span>
+            <input autocomplete="off" class="coc-input formatInputs" type="text" name="Amount_Incomes"
+              id="id_Amount_Incomes" step="0.0001" placeholder="0.00" />
+          </div>
+
+          <div class="input-box" name="PaymentType_Incomes">
+            <span id="payment_type_label" class="details">Ödeme Türü</span>
+            <select name="PaymentType_Incomes" id="id_PaymentType_Incomes">
+              <option value="Kredi Kartı">Kredi Kartı</option>
+              <option value="Çek">Çek</option>
+              <option value="EFT">EFT</option>
+            </select>
+          </div>
+          <div class="input-box chek-last-date-box" id="id_boxLastChekDate_Incomes">
+            <span class="details">Çek Son Kullanma Tarihi </span>
+            <input class="coc-input date-inputs" type="text" name="LastChekDate_Incomes" id="id_LastChekDate_Incomes"
+              placeholder="01.01.2000" maxlength="10" disabled />
+          </div>
+          <div class="input-box" id="chek_date_box">
+            <span class="details">Tarih </span>
+            <input class="coc-input date-inputs" type="text" name="ChekDate_Incomes" id="id_ChekDate_Incomes"
+              placeholder="01.01.2000" maxlength="10" />
+          </div>
+          <div class="input-box" name="Dollar_Rate_Incomes">
+            <span class="details">Dolar Kuru (₺)</span>
+            <input class="coc-input formatInputs" id="id_Dollar_Rate_Incomes" name="Dollar_Rate_Incomes" type="text" />
+          </div>
+
+          <div class="input-box">
+            <span class="details">Kur Saati</span>
+            <select name="" id="income-kur-time">
+              <option value="secenek1">Kur Saati Seçiniz</option>
+              <option value="secenek2">15:30'dan Önce</option>
+              <option value="secenek3">15:30'dan Sonra</option>
+            </select>
+          </div>
+        </div>
+        <div class="button">
+          <input id="income-create-btn" type="button" value="Gelir Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window expenses-add-window">
+    <div class="container">
+      <h3 id="expenses-X" class="close-window">X</h3>
+      <div class="title">Gider Ekle</div>
+      <form id="expenses_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="expenses_form" />
+        <div class="user-details">
+          <div class="input-box" id="CompanyName_Paying_ExpensesInput">
+            <span id="expenses_firma_span" class="details">Ödeme Yapılan Firma*
+              <button type="button" id="paying-firma-add-btn-2" class="paying-supplier-add-btn">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_CompanyName_Paying_Expenses"
+                name="CompanyName_Paying_Expenses" class="myInput  need_id" placeholder="Firma Adını Seçiniz"
+                data-dropdown="expenses_dropdown1" />
+
+              <div id="expenses_dropdown1" class="dropdown-content supplier_dropdown">
+
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" id="ProjectName_ExpensesInput">
+            <span id="expenses_proje_span" class="details">Proje Adı*</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ProjectName_Expenses" name="Project_Expenses"
+                class="myInput  need_id" placeholder="Proje Adını Seçiniz" data-dropdown="expenses_dropdown2" />
+
+              <div id="expenses_dropdown2" class="dropdown-content projects_dropdown ">
+                {% for x in project %}
+                <span value="{{x.id}}" class="dropdown-item">{{x.ProjectName}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" name="CompanyName_FromPaymentMade_Expenses">
+            <span class="details">Ödeme Yapan Firma</span>
+            <select name="CompanyName_FromPaymentMade_Expenses" id="">
+              <option value="Sovo">Sovo</option>
+              <option value="Tozoğlu">Tozoğlu</option>
+            </select>
+          </div>
+
+          <div class="input-box">
+            <span id="gider_detay_span" class="details">Gider Detayı*</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ExpensDetails_Expenses" name="ExpensDetails_Expenses"
+                class="myInput" placeholder="Gider Detayı Seçiniz" data-dropdown="dropdown3" />
+              <div id="dropdown3" class="dropdown-content">
+                {% for x in details %}
+                <span value="{{x.id}}" class="dropdown-item">{{x.Detail}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span class="details">Tutar (₺)</span>
+            <input autocomplete="off" class="coc-input formatInputs" type="text" name="Amount_Expenses"
+              id="id_Amount_Expenses" step="0.0001" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span class="details">Dolar Kuru (₺)</span>
+            <input class="coc-input formatInputs" id="id_Dollar_Rate_Expenses" name="Dollar_Rate_Expenses" type="text" />
+          </div>
+          <div class="input-box">
+            <span class="details">Tarih</span>
+            <input class="coc-input date-inputs" id="id_Date_Expenses" type="text" name="Date_Expenses"
+              placeholder="01.01.2000" maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">Kur Saati</span>
+            <select name="" id="expenses-kur-time">
+              <option value="secenek1">Kur Saati Seçiniz</option>
+              <option value="secenek2">15:30'dan Önce</option>
+              <option value="secenek3">15:30'dan Sonra</option>
+            </select>
+          </div>
+          <div class="input-box">
+            <span class="details">Banka</span>
+            <select name="Bank_Expenses" id="id_Bank_Expenses">
+              <option value="" selected>Banka Seçiniz</option>
+              {% for bank in banks %}
+              <option value="{{bank}}">{{bank}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="button">
+          <input id="expenses-create-btn" type="button" value="Gider Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window jobhistory-add-window">
+    <div class="container">
+      <h3 id="jobhistory-X" class="close-window">X</h3>
+      <div class="title">Yapılan İş Ekle</div>
+      <form id="jobhistory_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="jobhistory_form" />
+        <div class="user-details">
+          <div class="input-box {% if jobhistory_form.CompanyName_Job_JobHistory.errors %}error{% endif %}"
+            id="CompanyName_Job_JobHistoryInput">
+            <span id="jobhistory_firma_span" class="details">İş Yapılan Firma*<button type="button"
+                id="paying-firma-add-btn-2" class="paying-supplier-add-btn"><i
+                  class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_CompanyName_Job_JobHistory" name="CompanyName_Job_JobHistory"
+                class="myInput  need_id" placeholder="Firma Adını Seçiniz" data-dropdown="jobhistory_dropdown1" />
+
+              <div id="jobhistory_dropdown1" class="dropdown-content supplier_dropdown">
+
+              </div>
+            </div>
+          </div>
+          <div class="input-box {% if jobhistory_form.ProjectName_JobHistory.errors %}error{% endif %}"
+            id="ProjectName_JobHistoryInput">
+            <span id="jobhistory_proje_span" class="details">Proje Adı*</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ProjectName_JobHistory" name="Project_JobHistory"
+                class="myInput  need_id" placeholder="Proje Adını Seçiniz" data-dropdown="jobhistory_dropdown2" />
+
+              <div id="jobhistory_dropdown2" class="dropdown-content projects_dropdown">
+
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" name="ExpensDetails_JobHistory">
+            <span class="details">Cinsi</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ExpensDetails_JobHistory" name="ExpensDetails_JobHistory"
+                class="myInput" placeholder="Proje Adını Seçiniz" data-dropdown="jobhistory_dropdown3" />
+
+              <div id="jobhistory_dropdown3" class="dropdown-content">
+                {% for detail in details %}
+                 <span value="{{detail.id}}" class="dropdown-item gender_dropdown">{{detail}}</span> 
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box" name="Amount_JobHistory">
+            <span class="details">Tutar (₺)</span>
+            <input autocomplete="off" class="coc-input formatInputs" type="text" name="Amount_JobHistory"
+              id="id_Amount_JobHistory" step="0.0001" placeholder="0.00" />
+          </div>
+          <div class="input-box" name="Dollar_Rate_JobHistory">
+            <span class="details">Dolar Kuru (₺)</span>
+            <input class="coc-input formatInputs" id="Dollar_Rate_JobHistory" name="Dollar_Rate_JobHistory" type="text" />
+          </div>
+          <div class="input-box">
+            <span class="details">Tarih</span>
+            <input class="coc-input date-inputs" id="id_Date_JobHistory" type="text" name="Date_JobHistory"
+              placeholder="01.01.2000" maxlength="10" />
+          </div>
+          <div class="input-box" name="Invoice_No_JobHistory">
+            <span class="details">Fatura Numarası</span>
+            <input id="id_Invoice_No_JobHistory" name="Invoice_No_JobHistory" type="text"
+              placeholder="Fatura Numarası Giriniz" />
+          </div>
+          <div class="input-box">
+            <span class="details">Kur Saati</span>
+            <select name="" id="jobhistory-kur-time">
+              <option value="secenek1">Kur Saati Seçiniz</option>
+              <option value="secenek2">15:30'dan Önce</option>
+              <option value="secenek3">15:30'dan Sonra</option>
+            </select>
+          </div>
+        </div>
+        <div class="button">
+          <input id="jobhistory-create-btn" type="button" value="Yapılan İş Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window client-add-window">
+    <div style="width: 400px" id="client_container" class="container">
+      <h3 id="client-X" class="close-window clientx">X</h3>
+      <div class="title">Firma Ekle</div>
+      <form id="firma_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="client_form" />
+
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+            <span id="firma_add_label" class="details">Firma Adı*</span>
+            <input id="id_CompanyName_Clients" name="CompanyName_Clients" type="text" />
+          </div>
+        </div>
+        <div class="button">
+          <input id="firma_submit_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window supplier-add-window">
+    <div style="width: 400px" id="supplier_container" class="container">
+      <h3 id="supplier-X" class="close-window supplierx">X</h3>
+      <div class="title">Firma Ekle</div>
+      <form id="supplier_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="supplier_form">
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="CompanyName_Supplier">
+            <span id="supplier_add_label" class="details">Firma Adı*</span>
+            <input id="id_CompanyName_Supplier" name="CompanyName_Supplier" type="text" />
+          </div>
+        </div>
+        <div class="button">
+          <input id="supplier_add_btn" type="button" value="Kaydet">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <main class="table" id="customers_table">
+      <section class="table__header">
+        <button style="display: none;" class="hamburger-button"><i class="fa-solid fa-bars"></i></button>
+        <p>PROJELER</p>
+        <button style="display: none;"  class="add-hamburger-button"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <div class="export__file">
+          <button class="income-add-btn">Gelir</button>
+          <button class="expenses-add-btn">Yapılan Ödeme</button>
+          <button class="jobhistory-add-btn">Yapılan İş</button>
+          <button class="project-add-btn">Proje Başlat</button>
+        </div>
+      </section>
+      <section class="table__body">
+        <table id="project_table">
+          <thead>
+            <tr>
+              <th><span></span></th>
+              <th>Proje Adı<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+              <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+              <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+              <th>İş Bedeli<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Durum<span class="icon-arrow">&UpArrow;</span></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</div>
+
+{% endblock %} {% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'projects.js' %}"></script>
+
+{% endblock %}

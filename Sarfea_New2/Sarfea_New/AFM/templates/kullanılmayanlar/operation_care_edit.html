@@ -1,0 +1,228 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"/> -->
+<link rel="stylesheet" href="{% static 'details_projects.css' %}" />
+<link rel="stylesheet" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+
+<style>
+  #paying-firma-add-btn{
+    padding: 0 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    font-size: 15px;
+  }
+</style>
+
+{% endblock %} {% block title %} Operation Care Edit {% endblock %} {% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div class="right-menu">
+    <div class="nav-bar">
+      <div class="nav-span">
+        <div class="backBtn">
+          <a href="{% url 'operation_care' %}">
+            <button id="backBtn" class="button-project">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </a>
+          <span> </span>
+        </div>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="container projeBaslatContainer">
+        <div class="title">İşletme Bakım Güncelle</div>
+        <form id="my-form" action="{% url 'operation_care_edit' operation_care_id=operation_care.id %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="form" />
+
+          <div class="user-details">
+
+            <div class="input-box" id="CompanyNameInput">
+              <span id="firma_adi_span" class="details">Firma Adı*<button type="button" id="paying-firma-add-btn" class="paying-firma-add-btn">
+                  <i class="fa-solid fa-plus"></i></button></span>
+              <div class="dropdown-container">
+                <input value="{{operation_care.Operation_Care_Company}}" autocomplete= 'off' type="text" id="id_Operation_Care_Company" name="Operation_Care_Company" class="myInput" placeholder="Firma Adını Seçiniz" data-dropdown="dropdown1"/>
+                <div id="dropdown1" class="dropdown-content">
+                  {% for x in client %}
+                  <span value="{{x.id}}" class="dropdown-item"
+                    >{{x.CompanyName_Clients}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="input-box" id="ProjectNameInput">
+              <span id="proje_adi_span" class="details">İnventör Marka</span>
+              <input value="{{operation_care.Operation_Care_Inventor_Brand}}" autocomplete= 'off' type="text" name="Operation_Care_Inventor_Brand" maxlength="63" placeholder="Marka İsmi Giriniz" id="id_Operation_Care_Inventor_Brand" autocomplete="off">
+            </div>
+            <div
+              class="input-box" 
+              id="ProjectCodeInput"
+            >
+              <span id="proje_kodu_span" class="details">Panel Markası</span>
+              <input value="{{operation_care.Operation_Care_Panel_Brand}}" autocomplete= 'off' type="text" name="Operation_Care_Panel_Brand" maxlength="63" placeholder="Marka İsmi Giriniz" id="id_Operation_Care_Panel_Brand" autocomplete="off">
+
+            </div>            
+            <div class="input-box">
+              <span id="konum_label" class="details">Konum</span>
+              <div class="dropdown-container">
+                <input
+                    value="{{operation_care.Operation_Care_Location}}"
+                  type="text"
+                  id="id_Operation_Care_Location"
+                  name="Operation_Care_Location"
+                  class="myInput"
+                  placeholder="Konum Seçiniz"
+                  data-dropdown="dropdown2"
+                  autocomplete="off"
+                />
+                <div id="dropdown2" class="dropdown-content">
+                  {% for x in locations %}
+                  <span value="{{x.Location}}" class="dropdown-item"
+                    >{{x.Location}}</span
+                  >
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="input-box">
+              <span class="details">inventör Güç</span>
+              <input value="{{operation_care.Operation_Care_Inventor_Power}}" class="coc-input" type="text" name="Operation_Care_Inventor_Power" id="id_Operation_Care_Inventor_Power" step="1" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Panel Gücü</span>
+              <input value="{{operation_care.Operation_Care_Panel_Power}}" class="coc-input" type="text" name="Operation_Care_Panel_Power" id="id_Operation_Care_Panel_Power" step="1" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Adres</span>
+              <input value="{{operation_care.Operation_Care_Address}}" class="coc-input" type="text" name="Operation_Care_Address" id="id_Operation_Care_Address" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">İnventör Adet</span>
+              <input value="{{operation_care.Operation_Care_Inventor_Number}}" class="coc-input" type="text" name="Operation_Care_Inventor_Number" id="id_Operation_Care_Inventor_Number" step="1" autocomplete="off"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Panel VOC</span>
+              <input value="{{operation_care.Operation_Care_VOC}}" class="coc-input" type="text" name="Operation_Care_VOC" id="id_Operation_Care_VOC" step="0.1" autocomplete="off"/>
+            </div>
+
+            <div class="input-box">
+              <span class="details">Tesis Kurulu Gücü</span>
+              <input value="{{operation_care.Operation_Care_Capacity}}" id="id_Operation_Care_Capacity" type="text" name="Operation_Care_Capacity"/>
+            </div>
+            <div class="input-box">
+              <span class="details">AC Güç(kWe)</span>
+              <input value="{{operation_care.Operation_Care_AC_Power}}" id="id_Operation_Care_AC_Power" type="text" name="Operation_Care_AC_Power"/>
+            </div>
+            <div class="input-box">
+              <span class="details">String Sayısı</span>
+              <input value="{{operation_care.Operation_Care_Number_Str}}" id="id_Operation_Care_Number_Str" type="text" name="Operation_Care_Number_Str"/>
+            </div> 
+            <div class="input-box">
+              <span class="details">Arazi/Çatı</span>
+              <select name="Operation_Care_Terrain_Roof" id="id_Operation_Care_Terrain_Roof">
+                {% if operation_care.Operation_Care_Terrain_Roof == "Arazi" %}
+                <option value="Arazi" selected>Arazi</option>
+                {% else %}
+                <option value="Arazi">Arazi</option>
+                {% endif %}
+
+                {% if operation_care.Operation_Care_Terrain_Roof == "Çatı" %}
+                <option value="Çatı" selected>Çatı</option>
+                {% else %}
+                <option value="Çatı">Çatı</option>
+                {% endif %}
+                </select>
+            </div>
+            <div class="input-box">
+              <span class="details">DC Güç(kWp)</span>
+              <input  value="{{operation_care.Operation_Care_DC_Power}}" id="id_Operation_Care_DC_Power" type="text" name="Operation_Care_DC_Power"/>
+            </div>
+            <div class="input-box">
+              <span class="details">1 stringteki Panel Sayısı</span>
+              <input value="{{operation_care.Operation_Care_Panel_Number_Str}}" id="id_Operation_Care_Panel_Number_Str" type="text" name="Operation_Care_Panel_Number_Str"/>
+            </div>                       
+            <div class="input-box">
+              <span class="details">Devreye Alınma Tarihi</span>
+              <input value="{{ operation_care.Operation_Care_Start_Date|date:'Y-m-d' }}" id="id_Operation_Care_Start_Date" type="date" name="Operation_Care_Start_Date"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Bakım Sözleşmesi Bitiş Tarihi</span>
+              <input value="{{operation_care.Operation_Care_Finish_Date|date:'Y-m-d'}}" id="id_Operation_Care_Finish_Date" type="date" name="Operation_Care_Finish_Date"/>
+            </div>
+            <div class="input-box">
+              <span class="details">Yön</span>
+              <select name="Operation_Care_Direction" id="id_Operation_Care_Direction">
+
+              {% if operation_care.Operation_Care_Direction == "Kuzey" %}
+              <option value="Kuzey" selected>Kuzey</option>
+            {% else %}
+              <option value="Kuzey">Kuzey</option>
+            {% endif %}
+            
+            {% if operation_care.Operation_Care_Direction == "Güney" %}
+              <option value="Güney" selected>Güney</option>
+            {% else %}
+              <option value="Güney">Güney</option>
+            {% endif %}
+            
+            {% if operation_care.Operation_Care_Direction == "Doğu" %}
+              <option value="Doğu" selected>Doğu</option>
+            {% else %}
+              <option value="Doğu">Doğu</option>
+            {% endif %}
+            
+            {% if operation_care.Operation_Care_Direction == "Batı" %}
+              <option value="Batı" selected>Batı</option>
+            {% else %}
+              <option value="Batı">Batı</option>
+            {% endif %}
+        </select>
+            
+            </div>
+            
+          </div>
+          <div class="button">
+            <input id="project-create-btn" type="submit" value="İşletme Bakım Güncelle" />
+          </div>
+        </form>
+      </div>
+
+      <div class="window clientFirmaAddWindow">
+        <div id="firma_container" class="container">
+          <h3 id="clientFirmaAdd-modal" class="modal-kapat">X</h3>
+          <div class="title">Firma Ekle</div>
+          <form id="firma_form" action="{% url 'operation_care_add' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="client_form" />
+
+            <div class="user-details">
+              <div id="firma_input_box" class="input-box" name="CompanyName_Clients">
+                <span id="firma_add_label" class="details">Firma Adı*</span>
+                {{ client_form.CompanyName_Clients }}
+              </div>
+            </div>
+            <div class="button">
+              <input id="firma_add_btn" type="submit" value="Kaydet" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block js_files %}
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="{% static 'functions.js' %}"></script> 
+
+
+
+  {% endblock %} 
+</div>

@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+    {% load static %}
+    {% load custom_tags %}
+
+    {% block css_files %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'projects_style.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'all_style.css' %}">
+    <link rel="stylesheet" href="{% static 'details_projectsss.css' %}">
+    <link rel="stylesheet" href="{% static 'center.css' %}">
+    <link rel="stylesheet" href="{% static 'sec-inputs.css' %}">
+
+
+    <style>
+      ::-webkit-scrollbar {
+  width: 0 !important;
+}
+      .paying-firma-add-btn {
+    margin-left: 7px;
+    padding: 0px 4px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+} 
+    </style>
+    {% endblock %}
+    
+    {% block title %} Expenses Edit {% endblock %}
+    {% block content %} 
+<div class="body-div">
+    {% include 'partials/_left_nav_bar.html' %}
+<div class="right-menu">
+    <div class="nav-bar">
+        <div class="nav-span">
+            <div class="backBtn">
+                <a href="{% url 'realized_cost' project_id=project.id %}">
+                    <button id="backBtn" class="button-project">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </a>
+                <span>
+                    </span>
+            </div>
+            <span>{{expenses_edit.CompanyName_Expenses}}</span>
+            <span></span>
+        </div>
+    </div>
+    <div class="center">
+      <div class="container">
+          <div class="title">Gider Güncelle</div>
+          <form id="my-form" action="{% url 'expenses_edit' expenses_id=expenses_edit.id %}" method="post">
+            {% csrf_token %}
+            <div class="user-details"> 
+              <div style="display:none;" class="input-box" name="ProjectName_Expenses">
+                  <span class="details">Proje Adı</span>
+                  <input  name="ProjectName_Expenses" value="{{ expenses_edit.ProjectName_Expenses }}">
+                </div>
+                <div style="display:none;" class="input-box" name=" CompanyName_Expenses">
+                  <span class="details">Şirket Adı</span>
+                  <input autocomplete= 'off' name=" CompanyName_Expenses" value=" {{expenses_edit.CompanyName_Expenses}} ">
+                </div>
+
+                <div class="input-box" id="CompanyName_Paying_ExpensesInput">
+                  <span id="odeme_yapilan_firma_span" class="details">Ödeme Yapılan Firma*</span>
+                  <div class="dropdown-container">
+                      <input autocomplete= 'off' value="{{ expenses_edit.CompanyName_Paying_Expenses }}" type="text" id="id_CompanyName_Paying_Expenses" name="CompanyName_Paying_Expenses" class="myInput" placeholder="Firma Adını Seçiniz" data-dropdown="dropdown1">
+                      
+                    <div id="dropdown1" class="dropdown-content">
+                          {% for x in supplier %}
+                              <span value="{{x.id}}" class="dropdown-item">{{x.CompanyName_Supplier}}</span>
+                          {% endfor %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="input-box">
+                  <span class="details">Ödeme Yapan Firma</span>
+                  <select name="CompanyName_FromPaymentMade_Expenses" id="id_CompanyName_FromPaymentMade_Expenses">
+                    {% for x in my_company %}
+                      {% if expenses_edit.CompanyName_FromPaymentMade_Expenses == x.MyCompanyName  %}
+                        <option value="{{x.id}}" selected>{{ expenses_edit.CompanyName_FromPaymentMade_Expenses }}</option>
+                      {% endif %}
+                    {% endfor %}
+                    {% for x in my_company %}
+                      {% if expenses_edit.CompanyName_FromPaymentMade_Expenses != x.MyCompanyName  %}
+                        <option value="{{x.id}}">{{x.MyCompanyName}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="input-box">
+                  <span id="gider_detay_span" class="details">Gider Detayı</span>
+                  <div class="dropdown-container">
+                      <input autocomplete= 'off' value="{{ expenses_edit.ExpensDetails_Expenses }}" type="text" id="id_ExpensDetails_Expenses" name="ExpensDetails_Expenses" class="myInput" placeholder="Gider Detayı Seçiniz" data-dropdown="dropdown2">
+                    <div id="dropdown2" class="dropdown-content">
+                          {% for x in details %}
+                              <span value="{{x.id}}" class="dropdown-item">{{x.Detail}}</span>
+                          {% endfor %}
+                    </div>
+                  </div> 
+              </div>
+
+                <div class="input-box">
+                    <span class="details">Tutar (₺)</span>
+                    <input autocomplete= 'off' class="coc-input" type="text" name="Amount_Expenses" id="id_Amount_Expenses" step="0.0001" value="{{expenses_edit.Amount_Expenses}}" placeholder="0.00">
+                </div>
+                <div class="input-box">
+                    <span class="details">Dolar Kuru (₺)</span>
+                    {{ edit_form.Dollar_Rate_Expenses }}
+                </div>
+                <div class="input-box">
+                  <span class="details">Banka</span>
+                  <select class="js-example-basic-single" name="Bank_Expenses" id="id_Bank_Expenses">
+                    {% for x in banks %}
+                      {% if expenses_edit.Bank_Expenses == x.BankName %}
+                        <option value="{{x.id}}" selected>{{ expenses_edit.Bank_Expenses }}</option>
+                      {% endif %}
+                    {% endfor %}
+                    {% for x in banks %}
+                      {% if expenses_edit.Bank_Expenses != x.BankName  %}
+                        <option value="{{x.id}}">{{x.BankName}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="input-box">
+                    <span class="details">Tarih</span>
+                    <input class="coc-input" id="id_Date_Expenses" type="text" name="Date_Expenses" value="{{ expenses_edit.Date_Expenses|date:'Y-m-d' }}" placeholder="01.01.2000"/>
+                </div>
+                <div class="input-box">
+                  <span class="details">Kur Saati</span>
+                  <select name="" id="kur-time">
+                    <option value="secenek1">Kur Saati Seçiniz</option>
+                    <option value="secenek2">15:30'dan Önce</option>
+                    <option value="secenek3">15:30'dan Sonra</option>
+                  </select>
+              </div>
+              </div>
+              <div class="button">
+                <input id="project-create-btn" type="submit" value="Kaydet" />
+              </div>
+          </form>
+      </div>
+    </div>
+</div>
+</div>
+{% endblock %} 
+
+  {% block js_files %} 
+  <script src="{% static 'functions.js' %}"></script> 
+  <script src="{% static 'expenses_edit.js' %}"></script> 
+  
+  <script>
+  
+      
+      //**************      KUR HESAPLAMA      ********************
+      
+      
+      var dosyaURL = "{% static 'kur.json' %}";
+   //selection seçimine göre yapılacak işlem
+          
+          timeForKur.addEventListener('change', function () {
+              // Seçilen değeri al
+              const secilenDeger = timeForKur.value;
+             
+              // Seçilen değere göre işlem yap
+              if (secilenDeger === 'secenek1') {
+                  
+              } else if (secilenDeger === 'secenek2') {
+                  tarih = birGunOncekiTarih(dateForKur.value);
+                  console.log(tarih);
+                  fetch(dosyaURL)
+                  .then(response => response.json())
+                  .then(data => {
+                    try {
+                      // Hedef tarihi kullanarak veriyi filtrele
+                      const hedefVeri = data.items.find(item => item.Tarih === tarih);
+                
+                      if (hedefVeri) {
+                        // TP_DK_USD_S alanını konsola yazdır
+                        //console.log(hedefVeri.TP_DK_USD_S);
+                        kurInput.value = hedefVeri.TP_DK_USD_S
+                        console.log(hedefVeri.TP_DK_USD_S);
+                      } else {
+                        console.log('Belirtilen tarihe ait veri bulunamadı.');
+                      }
+                    } catch (parseHata) {
+                      console.error('JSON parse hatası:', parseHata);
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Dosya okuma hatası:', err);
+                  });
+              ////-----------------------------------------
+                      
+              } else if (secilenDeger === 'secenek3') {
+                //console.log(dateForKur.value);
+                  tarih = tarihFormatiniDegistir(dateForKur.value);    
+                  console.log(tarih);
+                  fetch(dosyaURL)
+                  .then(response => response.json())
+                  .then(data => {
+                    try {
+                      // Hedef tarihi kullanarak veriyi filtrele
+                      const hedefVeri = data.items.find(item => item.Tarih === tarih);
+                
+                      if (hedefVeri) {
+                        // TP_DK_USD_S alanını konsola yazdır
+                        console.log(hedefVeri.TP_DK_USD_S);
+                        kurInput.value = hedefVeri.TP_DK_USD_S
+                      } else {
+                        console.log('Belirtilen tarihe ait veri bulunamadı.');
+                      }
+                    } catch (parseHata) {
+                      console.error('JSON parse hatası:', parseHata);
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Dosya okuma hatası:', err);
+                  });
+              }
+          });         
+      
+      
+
+   </script>
+   
+  
+  {% endblock %}
+
+  

@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/*  Body    */
+
+.body-div{
+    display: flex;
+    height: 100vh;   
+    flex-direction: row; 
+}
+.right-menu{
+    width: calc(100% - 256px);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/*  Right Menu  */
+.card{    
+    border-radius: 15px;    
+    margin-right: 5px;
+    border: 1px solid #000;
+    background-position: center;
+    background-size:cover;
+}
+
+.nav-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: #18283b;
+    padding: 10px 15px;
+    height: 87px;
+}
+.nav-bar span{
+    cursor: pointer;
+    background-color: transparent;
+    color: #fff;
+    font-weight: 600;
+    font-size: 20px;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 3px;
+}
+.span-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 330px;
+}
+a{
+    color: #000;
+}
+.nav-bar button {
+    cursor: pointer;
+    background-color: #fff;
+    padding: 10px 25px;
+    border: none;
+    margin-left: 10px;
+    font-size: 16px;    
+    border: solid 1px rgba(0, 0, 0, .3);   
+    border-radius: 40px; 
+}
+button{
+    cursor: pointer;
+    background-color: transparent;
+    padding: 10px 25px;
+    border: none;
+    margin-left: 10px;
+    font-size: 16px;  
+}
+.nav-span{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 420px;
+}
+.nav-span span{
+    color: #fff;
+    font-weight: 600;
+    font-size: 20px;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 3px;
+}
+.main{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    height: 33.3333%;
+    width: 100%;
+    background-color: #18283b;
+    margin: auto;
+    
+}
+.column-1{
+    display: flex;
+    position: relative;
+    height: calc(100% - 10px);
+    width: 16.6666%;
+    background-color: #fff;    
+}
+.column-2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: calc(100% - 10px);
+    width: 20%;
+    background-color: #fff;
+}
+.row a{
+    padding: 0px 10px;
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    color: transparent;
+    background-color: transparent;
+}
+
+.row span{
+    color: transparent;
+    font-size: 30px;
+    font-weight: 500;
+    border-radius: 15px;
+    padding: 0 10px;
+}
+
+/*---------------------*/
+

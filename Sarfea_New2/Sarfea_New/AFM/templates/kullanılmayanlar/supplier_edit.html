@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+    {% load static %}
+    {% load custom_tags %}
+
+    {% block css_files %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+    <!-- <link rel="stylesheet" href="{% static 'projects_style.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'all_style.css' %}">
+    <link rel="stylesheet" href="{% static 'details_projects.css' %}">
+    <link rel="stylesheet" href="{% static 'center.css' %}">
+    <link rel="stylesheet" href="{% static 'sec-inputs.css' %}">
+
+    {% endblock %}
+    
+    {% block title %} Supplier Edit {% endblock %}
+    {% block content %} 
+<div class="body-div">
+    {% include 'partials/_left_nav_bar.html' %}
+<div class="right-menu">
+    <div class="nav-bar">
+        <div class="nav-span">
+            <div class="backBtn">
+                <a href="{% url 'supplier' %}">
+                    <button id="backBtn" class="button-project">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </a>
+                <span>
+                    </span>
+            </div>
+            <div class="span-box"><span>{{supplier_edit.CompanyName_Supplier}}</span></div>
+            <span></span>
+        </div>
+    </div>
+    <div class="center">
+      <div class="container">
+          <div class="title"><span>Tedarikçi Güncelle</span></div>
+          <form id="myForm" action="{% url 'supplier_edit' supplier_name=supplier_edit.CompanyName_Supplier %}" method="post">
+            {% csrf_token %}
+            <div class="user-details"> 
+                <div style="display:none;" class="input-box" name="CompanyName">
+                  <span  class="details">Firma Adı</span>
+                  {{ edit_form.CompanyName_Supplier }}
+                </div>    
+                <div class="input-box" name="CompanyName">
+                  <span id="firma_adi_span" class="details">Firma Adı*</span>
+                  <input autocomplete= 'off' id="id_CompanyName_Supplier"  name="CompanyName_Supplier" value="{{edit_form.CompanyName_Supplier.value}}" />
+                  <p id="companyNameError" style="color: #191970;"></p>
+
+                </div>  
+                <div class="input-box" name="CompanyName">
+                  <span class="details">Muhatap</span>
+                  {{ edit_form.ContactPerson }}
+                </div>  
+                <div class="input-box" name="CompanyName">
+                  <span class="details">Telefon</span>
+                  {{ edit_form.PhoneNumber }}
+                </div>    
+                <div class="input-box" name="CompanyName">
+                  <span class="details">E-posta</span>
+                  {{ edit_form.Email }}
+                </div>    
+                <div class="input-box ">
+                  <span class="details">Bölge</span>
+                  <div class="dropdown-container">
+                    <input value="{{supplier_edit.Location}}" type="text" id="id_Location" name="Location" class="myInput" placeholder="Bölge Seçiniz" data-dropdown="dropdown1">
+                  <div id="dropdown1" class="dropdown-content">
+                        {% for x in locations %}
+                            <span value="{{x.Location}}" class="dropdown-item">{{x.Location}}</span>
+                        {% endfor %}
+                  </div>
+                </div>
+                </div>
+              </div>
+              <div class="button">
+                  <input id="kaydet_btn" type="submit" value="Kaydet"/>
+              </div>
+          </form>
+      </div>
+    </div>
+</div>
+</div>
+{% endblock %} 
+{% block js_files %} 
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'supplier_edit.js' %}"></script>
+
+
+  
+  {% endblock %}
+
+  
+  

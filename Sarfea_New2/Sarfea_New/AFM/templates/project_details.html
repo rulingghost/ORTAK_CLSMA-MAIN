@@ -1,0 +1,205 @@
+{%extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+<link rel="stylesheet" href="{% static 'details_projects.css' %}">
+<link rel="stylesheet" href="{% static 'all_style.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+<style>
+     :root {
+        --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+    .sidebar-links li.projeler_li {
+    background: var(--main-color-dark);
+  }
+  </style>
+{% endblock %}
+
+{% block title %} Project Details {% endblock %}
+{% block content %}
+<div class="body-div">
+    {% include 'partials/_left_nav_bar.html' %}
+    <div class="right-menu">
+        <div class="nav-bar">
+            <div class="nav-span">
+                <div class="backBtn">
+                    <a href="{% url 'projects' %}">
+                        <button style="color: rgb(47, 65, 79);" class="back-button">
+                            <i class="fa-solid fa-angles-left"></i>
+                        </button>
+                    </a>
+                </div>                
+                <span>{{project.Company_id}}</span>
+                <span id="{{project.id}}" class="project_id">{{project.ProjectName}}</span>
+                <span id="last-span">{{project.CompanyUndertakingWork}}</span>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="row">
+                <div id="konum_div" 
+                    class="column-2 card">
+                    <iframe id="haritaFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <div style="display: none;" class="span">                        
+                        <span>Konum</span>
+                        {% if project.Location %}
+                        <span id="Konum_span">{{project.Location}}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="flex" class="column-2 card flex">
+                    <span><i class="fa-solid fa-power-off"></i></span>
+                    <span id="ac-power-span">{{project.AC_Power}} kWe</span>
+                    <span>AC Güç</span>
+                </div>
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-power-off"></i></span>
+                    <span id="dc-power-span">{{project.DC_Power}}kWp</span>
+                    <span>DC Güç</span>
+                </div>
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-money-bill-transfer"></i></span>
+                    {% if project.Incentive %}
+                    <span class="title">Teşvikli</span>
+                    {% else %}
+                    <span class="title">Teşviksiz</span>
+                    {% endif %}
+                    <span>Teşvik Durumu</span>
+                </div>
+                <div id="type_div" class="column-2 card flex">
+                    <span><i class="fa-solid fa-location-dot"></i></span>
+                    <!-- <div style="display: none;" class="span"><span id="type_span">{{project.Terrain_Roof}}</span></div> -->
+                    <span>{{project.Terrain_Roof}}</span>
+                    <span>Arazi/Çatı</span>
+                </div>
+            </div>
+            <div class="row">
+                <div style="background: #fff;" class="column-2 card flex">                    
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>                    
+                    <span id="realized_income_span"></span>
+                    <span>Gerçekleşen İş Bedeli</span>
+                    <!-- <a style="width: 100%; height: 100%;" href="{% url 'income_details' project_id=project.id %}">a</a> -->
+                    <a href="{% url 'income_details' project_id=project.id %}" style="position: fixed; top: 5px; right: 5px; font-size: 27px;"><i class="fa-regular fa-hand-pointer"></i></a>
+                </div>
+                <div id="gerceklesenMaliyet" style="background: #fff;" class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span id="realized_cost_span2"></span>
+                    <span>Gerçekleşen Maliyet</span>
+                    <!-- <a style="width: 100%; height: 100%;" href="{% url 'realized_cost' project_id=project.id %}"></a> -->
+                    <a href="{% url 'realized_cost' project_id=project.id %}" style="position: fixed; top: 5px; right: 5px; font-size: 27px;"><i class="fa-regular fa-hand-pointer"></i></a>
+                </div>               
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span id="gerceklesen_kar_zarar"></span>
+                    <!-- <div class="chart_divs"><canvas style="width: 100%; height: 100%;" id="gerceklesen_grafik"></canvas></div>                     -->
+                    <span>Gerçekleşen Kar/Zarar</span>
+                </div>
+                <div  class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span id="gerceklesen_kar_orani">0$</span>
+                    <span>Gerçekleşen Kar Oranı</span>
+                </div>
+                
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-calendar-days"></i></span>
+                    <span class="date-span">{{project.StartDate|date:"d/m/Y"}}</span>
+                    <span>Başlama Tarihi</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span class="need_format" id="hesaplanan_is_bedeli_span">{{project.Cost_NotIncludingKDV}}$</span>
+                    <span>Hesaplanan İş Bedeli</span>
+                </div>                
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span class="need_format" id="hesaplanan_maliyet_span">{{project.CalculatedCost_NotIncludingKDV}}$</span>
+                    <span>Hesaplanan Maliyet</span>
+                </div> 
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span id="hesaplanan_kar_zarar"></span>
+                    <!-- <div class="chart_divs"><canvas style="width: 100%; height: 100%;" id="hesaplanan_grafik"></canvas></div>  -->
+                    <span>Hesaplanan Kar/Zarar</span>
+                </div>
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span id="realized_cost_span">{{ profit|floatformat:2 }}%
+                    </span>
+                    <span>Hesaplanan Kar Oranı</span>
+                </div>
+                <div class="column-2 card flex">
+                    <span><i class="fa-solid fa-calendar-days"></i></span>
+                    <span class="date-span">{{project.FinishDate|date:"d/m/Y"}}</span>
+                    <span>Bitirme Tarihi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'project_details.js' %}"></script>
+<script>
+  
+
+ 
+</script>
+
+<script>
+    //                  BÖLÜMLERİ FORMATLAMA
+
+    formatSpans(acPowerSpan, "kWe");
+    formatSpans(dcPowerSpan, "kWp");
+    const formatSpanss = document.querySelectorAll(".need_format");
+    formatSpanss.forEach((span)=>{
+      formatSpans(span, "usd");
+      //span.textContent = formatNumber(span.textContent, 2)
+    })
+
+    //formatSpans(realizedCostSpan, "usd");
+    //formatSpans(realizedCostSpan2, "usd");
+
+    //                  KONUM VE ARAZİ/ÇATI RESİM YERLEŞTİRME
+   
+       
+        if(document.getElementById("Konum_span")){
+          var secilenIl = document.getElementById("Konum_span").textContent;
+          var haritaSrc = "https://www.google.com/maps/embed/v1/place?q=" + secilenIl + ",Türkiye&key=AIzaSyDwNQi_yJog73xZMeolxgWjtUYIpIqutPg";
+          console.log(haritaSrc)
+          document.getElementById("haritaFrame").src = haritaSrc;
+        }
+      
+   
+
+
+
+
+    //     typeImgChange(typeSpan)
+    // function typeImgChange(typeSpan) {
+    //     var typeText = typeSpan.textContent.toLowerCase();
+    //     if (typeText == "çatı") {
+    //         typeText = typeText.replace("çatı", "cati");
+    //     }
+    //     var newImageUrl = `{% static 'images/' %}${typeText}.png`;
+    //     typeDiv.style.backgroundImage = "url('" + newImageUrl + "')";
+    // };
+
+    // typeImgChange(typeSpan);
+    // function konumImgChange(konumSpan) {
+    //     var KonumText = konumSpan.textContent.toLowerCase();
+    //     var newImageUrl = `{% static 'images/sehirler/' %}${KonumText}.png`;
+    //     konumDiv.style.backgroundImage = "url('" + newImageUrl + "')";
+    // };
+
+</script>
+{% endblock %}

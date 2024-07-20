@@ -1,0 +1,368 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" t />
+<link rel="stylesheet" type="text/css" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'realized_cost.css' %}" />
+<style>
+   :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+</style>
+
+{% endblock %} {% block title %} Sovo-Tozoglu {% endblock %} {% block content %}
+
+<div class="body-div">
+  <div class="window expenses-add-window">
+    <div class="container">
+      <h3 id="expenses-X" class="close-window">X</h3>
+      <div class="title">Gider Ekle</div>
+      <form id="expenses_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="expenses_form" />
+        <div class="user-details">
+          <div style="display: none" class="input-box" id="ProjectName_ExpensesInput">
+            <span class="details">Proje Adı</span>
+            <div class="dropdown-container">
+              <input value="{{project.id}}" type="text" id="id_ProjectName_Expenses" class="not_this"
+                name="Project_Expenses" placeholder="Proje Adını Seçiniz" />
+            </div>
+          </div>
+
+          <div class="input-box" id="CompanyName_Paying_ExpensesInput">
+            <span id="odeme_yapilan_firma_span" class="details">Ödeme Yapılan Firma*<button type="button"
+                id="paying-firma-add-btn-2" class="paying-supplier-add-btn">
+                <i class="fa-solid fa-plus"></i>
+              </button></span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_CompanyName_Paying_Expenses"
+                name="CompanyName_Paying_Expenses" class="myInput  need_id" placeholder="Firma Adını Seçiniz"
+                data-dropdown="expenses_dropdown1" />
+
+              <div id="expenses_dropdown1" class="dropdown-content supplier_dropdown">
+
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" name="CompanyName_FromPaymentMade_Expenses">
+            <span class="details">Ödeme Yapan Firma</span>
+
+
+            <select name="CompanyName_FromPaymentMade_Expenses" id=" id_CompanyName_FromPaymentMade_Expenses">
+              <option value="Sovo">Sovo</option>
+              <option value="Tozoğlu">Tozoğlu</option>
+            </select>
+          </div>
+
+          <div class="input-box">
+            <span id="gider_detay_span" class="details">Gider Detayı*</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ExpensDetails_Expenses" name="ExpensDetails_Expenses"
+                class="myInput" placeholder="Gider Detayı Seçiniz" data-dropdown="dropdown3" />
+              <div id="dropdown3" class="dropdown-content">
+                {% for x in details %}
+                <span value="{{x.id}}" class="dropdown-item">{{x.Detail}}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box">
+            <span class="details">Tutar (₺)</span>
+            <input autocomplete="off" class="coc-input formatInputs" type="text" name="Amount_Expenses"
+              id="id_Amount_Expenses" step="0.0001" placeholder="0.00" />
+          </div>
+          <div class="input-box">
+            <span class="details">Dolar Kuru (₺)</span>
+            <input type="text" class="coc-input formatInputs" name="Dollar_Rate_Expenses" id="id_Dollar_Rate_Expenses">
+            <!-- {{ expenses_form.Dollar_Rate_Expenses }} -->
+          </div>
+          <div class="input-box">
+            <span class="details">Banka</span>
+            <select name="Bank_Expenses" id="id_Bank_Expenses">
+              <option value="">Banka Seçiniz</option>
+
+              {% for bank in banks %}
+              <option value="{{bank}}">{{bank}}</option>
+             {% endfor %}
+            </select>
+          </div>
+          <div class="input-box">
+            <span class="details">Tarih</span>
+            <input class="coc-input date-inputs" id="id_Date_Expenses" type="text" name="Date_Expenses"
+              placeholder="01.01.2000" maxlength="10" />
+          </div>
+          <div class="input-box">
+            <span class="details">Kur Saati</span>
+            <select name="" id="expenses-kur-time">
+              <option value="secenek1">Kur Saati Seçiniz</option>
+              <option value="secenek2">15:30'dan Önce</option>
+              <option value="secenek3">15:30'dan Sonra</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="button">
+          <input id="expenses-create-btn" type="button" value="Gider Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window jobhistory-add-window">
+    <div class="container">
+      <h3 id="jobhistory-X" class="close-window">X</h3>
+      <div class="title">Yapılan İş Ekle</div>
+      <form id="jobhistory_add_form" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="jobhistory_form" />
+        <div class="user-details">
+          <div style="display: none" class="input-box" id="ProjectName_JobHistoryInput">
+            <span class="details">Proje Adı</span>
+            <div class="dropdown-container">
+              <input value="{{project.id}}" type="text" id="id_ProjectName_JobHistory" class="not_this"
+                name="Project_JobHistory" placeholder="Proje Adını Seçiniz" />
+            </div>
+          </div>
+
+          <div class="input-box {% if jobhistory_form.CompanyName_Job_JobHistory.errors %}error{% endif %}"
+            id="CompanyName_Job_JobHistoryInput">
+            <span id="is_yapilan_firma_span" class="details">İş Yapılan Firma*<button type="button"
+                id="paying-firma-add-btn-2" class="paying-supplier-add-btn"><i
+                  class="fa-solid fa-plus"></i></button></span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_CompanyName_Job_JobHistory" name="CompanyName_Job_JobHistory"
+                class="myInput  need_id" placeholder="Firma Adını Seçiniz" data-dropdown="jobhistory_dropdown1" />
+
+              <div id="jobhistory_dropdown1" class="dropdown-content supplier_dropdown">
+
+              </div>
+            </div>
+          </div>
+
+          <div class="input-box" name="ExpensDetails_JobHistory">
+            <span class="details">Cinsi</span>
+            <div class="dropdown-container">
+              <input autocomplete="off" type="text" id="id_ExpensDetails_JobHistory" name="ExpensDetails_JobHistory"
+                class="myInput" placeholder="İş Cinsi Seçiniz" data-dropdown="jobhistory_dropdown3" />
+
+              <div id="jobhistory_dropdown3" class="dropdown-content">
+                {% for detail in details %}
+                 <span value="{{detail.id}}" class="dropdown-item gender_dropdown">{{detail}}</span> 
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="input-box" name="Amount_JobHistory">
+            <span class="details">Tutar (₺)</span>
+            <input autocomplete="off" class="coc-input formatInputs" type="text" name="Amount_JobHistory"
+              id="id_Amount_JobHistory" step="0.0001" placeholder="0.00" />
+          </div>
+          <div class="input-box" name="Dollar_Rate_JobHistory">
+            <span class="details">Dolar Kuru (₺)</span>
+            <input class="coc-input formatInputs" type="text" id="Dollar_Rate_JobHistory" name="Dollar_Rate_JobHistory">
+          </div>
+          <div class="input-box">
+            <span class="details">Tarih</span>
+            <input class="coc-input date-inputs" id="id_Date_JobHistory" type="text" name="Date_JobHistory"
+              placeholder="01.01.2000" maxlength="10" />
+          </div>
+          <div class="input-box" name="Invoice_No_JobHistory">
+            <span class="details">Fatura Numarası</span>
+            <input type="text" id="Invoice_No_JobHistory" name="Invoice_No_JobHistory">
+          </div>
+          <div class="input-box">
+            <span class="details">Kur Saati</span>
+            <select name="" id="jobhistory-kur-time">
+              <option value="secenek1">Kur Saati Seçiniz</option>
+              <option value="secenek2">15:30'dan Önce</option>
+              <option value="secenek3">15:30'dan Sonra</option>
+            </select>
+          </div>
+        </div>
+        <div class="button">
+          <input id="jobhistory-create-btn" type="button" value="Yapılan İş Ekle" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="window supplier-add-window">
+    <div style="width: 400px" id="supplier_container" class="container">
+      <h3 id="supplier-X" class="close-window supplierx">X</h3>
+      <div class="title">Firma Ekle</div>
+      <form id="supplier_add_form" action="#" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="supplier_form" />
+        <div class="user-details">
+          <div id="firma_input_box" class="input-box" name="CompanyName_Supplier">
+            <span id="firma_add_label" class="details">Firma Adı*</span>
+            <input id="id_CompanyName_Supplier" name="CompanyName_Supplier" type="text" />
+          </div>
+        </div>
+        <div class="button">
+          <input id="supplier_add_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="left-menu">
+    <nav>
+      <div class="sidebar-top">
+       
+        <span class="shrink-btn">
+          <i class="bx bx-chevron-left"></i>
+        </span>
+        <a style="text-align: center;" href="{% url 'home' %}"><img src="{% static 'images/newLogo.png' %}" class="logo" alt="" /></a>
+      </div>
+      <p style="display: none;" class="left-menu-project-name">{{project.ProjectName}}</p>
+      <div class="searchForNav">
+        <i class="bx bx-search"></i>
+        <input type="text" class="hide-for-menu" placeholder="Ara..." />
+      </div>
+
+      <div class="sidebar-links">
+        <ul>
+          <div class="active-tab"></div>
+          <li class="tooltip-element" data-tooltip="0">
+            <a href="{% url 'home' %}" class="active" data-active="0">
+              <span class="link hide-for-menu">Anasayfa</span>
+            </a>
+          </li>
+          <li class="tooltip-element" data-tooltip="0">
+            <a href="{% url 'home' %}" class="active" data-active="0">
+              <span class="link hide-for-menu">Anasayfa</span>
+            </a>
+          </li>
+
+      </div>
+
+      <div class="sidebar-footer">
+        <div style="display: none;  border-bottom: 1px solid gray; height: 90px;" class="table-btns">
+          <button type="button" id="jobhistory-table-btn">Yapılan İş</button>
+          <button type="button" id="expenses-table-btn">Yapılan Ödeme</button>
+        </div>
+        <button type="button" id="toplam-maliyet">Toplam Maliyet</button>
+      </div>
+    </nav>
+  </div>
+  <div class="right-menu">
+    <main class="table" id="customers_table">
+      <section class="table__header">
+       
+        <a href="{% url 'project_details' project_id=project.id %}">
+          <button style="color: rgb(47, 65, 79);" class="back-button">
+            <i class="fa-solid fa-angles-left"></i>
+          </button>
+        </a>
+        
+        <button style="width: 137px" class="button jobhistory-add-btn">
+          Yapılan İş
+        </button>
+        <p id="{{project.id}}">{{project.ProjectName}}</p>
+        <button style="margin-right: 330px;" class="button expenses-add-btn">Yapılan Ödeme</button>
+        <button style="display: none;" class="hamburger-button"><i class="fa-solid fa-bars"></i></button>
+      </section>
+      <section id="two_table_section" class="table__body">
+        <div class="overflow top-table">
+          <table id="jobhistory_table">
+            <thead>
+              <tr>
+                <th style="width: 3%;"><span></span></th>
+                <th style="width: 18%;">Fatura No<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 15%;">Tarih<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 14%;">Cinsi<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 18%;">Tutar(TL)<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 12%;">Kur<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 20%;">Tutar(USD)<span class="icon-arrow">&UpArrow;</span></th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"></td>
+                <td colspan="2"><b>Toplam : </b></td>
+                <td style="font-weight: 600;" colspan="1"><span id="jobhistory_tl_td">0.00</span>₺</td>
+                <td></td>
+                <td style="font-weight: 600;" colspan="1"><span id="jobhistory_usd_td">0.00</span>$</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="overflow bot-table">
+          <table id="expenses_table">
+            <thead>
+              <tr>
+                <th style="width: 2%;"><span></span></th>
+                <th style="width: 15%;">Tarih<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 18%;">Açıklama<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 15%;">Banka<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 18%;">Tutar(TL)<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 12%;">Kur<span class="icon-arrow">&UpArrow;</span></th>
+                <th style="width: 20%;">Tutar(USD)<span class="icon-arrow">&UpArrow;</span></th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"></td>
+                <td colspan="2"><b>Toplam : </b></td>
+                <td style="font-weight: 600;" colspan="1"><span id="expenses_tl_td">0.00</span>₺</td>
+                <td></td>
+                <td style="font-weight: 600;" colspan="1"><span id="expenses_usd_td">0.00</span>$</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+      <section style="display: none;" id="total_table_section" class="table__body">
+        <table style="width: 100%;" id="total_table">
+          <thead>
+            <tr>
+              <th><span></span></th>
+              <th>Firma Adı<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Toplam İş Miktarı(TL)<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Toplam İş Miktarı(USD)<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Toplam Gider(TL)<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Toplam Gider(USD)<span class="icon-arrow">&UpArrow;</span></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td><b>Toplam : </b></td>
+              <td style="font-weight: 700;" colspan="1"><span style="margin-left: 10px;"
+                  id="total_left_tl_td">0.00₺</span></td>
+              <td style="font-weight: 700;" colspan="1"><span style="margin-left: 10px;"
+                  id="total_left_usd_td">0.00$</span></td>
+              <td style="font-weight: 700;" colspan="1"><span style="margin-left: 10px;"
+                  id="total_right_tl_td">0.00₺</span></td>
+              <td style="font-weight: 700;" colspan="1"><span style="margin-left: 10px;"
+                  id="total_right_usd_td">0.00$</span></td>
+            </tr>
+          </tfoot>
+        </table>
+
+      </section>
+      <div class="total_div">
+        <span style="font-weight: 700; margin-right: 10px;">Kalan Ödeme : </span>
+        <span style="font-weight: 700; margin-right: 25px;" id="genel_tl"> 0.00₺</span>
+        <span style="font-weight: 700;" id="genel_usd"> 0.00$</span>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %} {% block js_files %}
+
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'realized_cost.js' %}"></script>
+
+{% endblock %}

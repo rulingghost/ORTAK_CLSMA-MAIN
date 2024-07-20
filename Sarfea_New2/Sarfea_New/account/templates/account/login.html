@@ -1,0 +1,53 @@
+{%extends "base.html" %}
+{% load static %}
+
+{% block css_files %} 
+
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+    {% endblock %}
+
+    {% block title %} Login Page {% endblock %}
+    {% block content %}  
+    <div class="login-container">
+        <h2>Üye Girişi</h2>
+        <form id="loginForm" method="POST">
+            {% csrf_token %}
+           
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+
+            <label for="password">Şifre:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+
+            <button type="submit" value="Login">Giriş Yap</button>
+            {% if error %}
+            <div class="alert">{{ error }}</div>
+            {% endif %}
+        </form>
+        
+    </div>
+    {% block js_files %} 
+
+    <script>
+        function login() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var loginMessage = document.getElementById("loginMessage");
+
+    // Örnek kullanıcı adı ve şifre
+    var validUsername = "admin";
+    var validPassword = "admin";
+
+    if (username === validUsername && password === validPassword) {
+        loginMessage.innerHTML = "Giriş başarılı!";
+        loginMessage.style.color = "green";
+    } else {
+        loginMessage.innerHTML = "Geçersiz kullanıcı adı veya şifre!";
+        loginMessage.style.color = "red";
+    }
+}
+
+    </script>
+    {% endblock %}
+    {% endblock %}
+

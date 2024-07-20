@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'client.css' %}" />
+
+<style>
+   :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+  .sidebar-links li.raporlama_li {
+  background: var(--main-color-dark);
+}
+#report_table{
+  width: 2200px;
+}
+</style>
+
+{% endblock %} {% block title %} Report {% endblock %} {% block content %}
+<div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+
+  <div class="right-menu">
+    <main class="table" id="customers_table">
+      <section class="table__header">
+        <button style="display: none;" class="hamburger-button"><i class="fa-solid fa-bars"></i></button>
+        <p>RAPORLAMA</p>
+        <div class="export__file">
+         
+        </div>
+      </section>
+      <section class="table__body">
+        <table id="report_table">
+          <thead>
+            <tr>
+              <th>Projeler<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Anlaşılan<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Alınan<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Ödenen<span class="icon-arrow">&UpArrow;</span></th>       
+              <th>Ödenmesi Gereken Borç<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Genel Kalan<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Harcama Cari Durum<span class="icon-arrow">&UpArrow;</span></th>
+              <th>KDV İadesi<span class="icon-arrow">&UpArrow;</span></th>
+              <th>KDV İadesi Hariç Kar<span class="icon-arrow">&UpArrow;</span></th>
+              <th>KDV İadesi Dahil Kar<span class="icon-arrow">&UpArrow;</span></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</div>
+{% endblock %} {% block js_files %}
+<script src="{% static 'functions.js' %}"></script>
+<script src="{% static 'report.js' %}"></script>
+
+{% endblock %}

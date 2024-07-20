@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_files %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'all_style.css' %}" />
+    <link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+    <link rel="stylesheet" href="{% static 'client.css' %}" />
+    
+  <style>
+  :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+.right-menu{
+   width:calc(100% - 256px);
+}
+#nav-bar{
+  display:flex;
+}
+td, th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.table__header button {
+    cursor: pointer;
+    font-size: 42px;
+    background-color: #fff5;
+    border: none;
+    padding: 0 13px;
+    border-radius: 50%;
+    transition: .2s;
+}
+.table__header p{
+  margin-right: 51%;
+}
+.sidebar-links li.satis_teklif_li {
+  background: var(--main-color-dark);
+}
+  </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.1/Sortable.min.js" integrity="sha512-3N7dD+tlndNxwAC0PwGNWnnEpzHQwgNl6/c9XW6+nqptoMhbI9Rb6kQiUFtYmXrox60oIELVSFAO0dCSfKb2tw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {% endblock %}
+    {% block title %} Sales Offer {% endblock %}
+    {% block content %}
+  <div class="body-div">
+  {% include 'partials/_left_nav_bar.html' %}
+  <div style="display: none;" class="file_upload">
+    <div class="container">
+      <h3 id="clientFirmaAdd-modal" class="modal-kapat">X</h3>
+      <form id="file-form" enctype="multipart/form-data">
+        <span class="details"></span>
+              <input style="display: none;" type="file" name="inputfile file_input" id="id_file_up" class="inputfile inputfile-1" />
+              <label id="file_label" for="id_file_up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> 
+                  <span id="details_span"></span></label>
+             
+        <div class="button">
+          <input style="cursor: pointer;" id="submit_btn" type="submit" value="Kaydet" />
+        </div>
+      </form>
+    </div>
+  </div>
+      <div class="right-menu">         
+        <main class="table" id="customers_table">
+          <section class="table__header">
+            <a href="{% url 'sales_offer' %}">
+              <button style="color: rgb(47, 65, 79);" class="back-button">
+                <i class="fa-solid fa-angles-left"></i>
+              </button>
+            </a>
+            <p>{{card.Client_Card}}</p>            
+          </section>
+          <section class="table__body">
+            <table id="sales_revize_table">
+              <thead>
+                <tr>
+                  <th>Durum<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Müşteri Adı<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Konum<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>İlgili Kişi<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>AC Güç<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>DC Güç<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Toplam Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Birim Teklif<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Arazi/Çatı<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Arazi Maliyeti<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Arazi Dahil Birim Maliyet<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Arazi Dahil Toplam Teklif<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Tarih<span class="icon-arrow">&UpArrow;</span></th>
+                  <th>Revize Alma Tarihi<span class="icon-arrow">&UpArrow;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{card.Situation_Card}}</td>
+                  <td> {{card.Client_Card}} </td>
+                  <td>{{card.Location_Card}}</td>
+                  <td>{{card.Person_Deal}}</td>
+                  <td>{{card.AC_Power_Card}}</td>
+                  <td>{{card.DC_Power_Card}}</td>
+                  <td>{{card.UnitCost_NotIncludingKDV}}</td>
+                  <td>{{card.Cost_NotIncludingKDV_Card}}</td>
+                  <td>{{card.UnitOffer_NotIncludingKDV}}</td>
+                  <td>{{card.Offer_Cost_NotIncludingKDV_Card}}</td>
+                  <td>{{card.Terrain_Roof_Card}}</td>
+                  <td>{{card.Roof_Cost_Card}}</td>
+                  <td>{{card.Unit_Cost_with_Roof_Cost}}</td>
+                  <td>{{card.Unit_Offer_with_Roof_Cost}}</td>
+                  <!-- <td>{{card.Profit_Rate_Card}}</td> -->
+                  <td>{{card.Date_Card| date:"d F y"}}</td>
+                  <td>Mevcut Durum</td>
+                </tr>
+                {% for revise in revises %}
+                <tr>
+                  <td>{{revise.Situation_Card}}</td>
+                  <td> {{revise.Client_Card}} </td>
+                  <td>{{revise.Location_Card}}</td>
+                  <td>{{revise.Person_Deal}}</td>
+                  <td>{{revise.AC_Power_Card}}</td>
+                  <td>{{revise.DC_Power_Card}}</td>
+                  <td>{{revise.UnitCost_NotIncludingKDV}}</td>
+                  <td>{{revise.Cost_NotIncludingKDV_Card}}</td>
+                  <td>{{revise.UnitOffer_NotIncludingKDV}}</td>
+                  <td>{{revise.Offer_Cost_NotIncludingKDV_Card}}</td>
+                  <td>{{revise.Terrain_Roof_Card}}</td>
+                  <td>{{revise.Roof_Cost_Card}}</td>
+                  <td>{{revise.Unit_Cost_with_Roof_Cost}}</td>
+                  <td>{{revise.Unit_Offer_with_Roof_Cost}}</td>
+                  <!-- <td>{{revise.Profit_Rate_Card}}</td> -->
+                  <td>{{revise.Date_Card| date:"d F y"}}</td>                    
+                  <td>{{ revise.Revize_created_at|date:"d F y - H:i" }}</td>
+
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </main>               
+      </div>   
+  </div>
+  {% endblock %}
+
+{% block js_files %} 
+<script src="{% static 'functions.js' %}"></script> 
+<script src="{% static 'sales_offer_revises.js' %}"></script> 
+
+{% endblock %}

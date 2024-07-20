@@ -1,0 +1,126 @@
+{% extends "base.html" %} {% load static %} {% block css_files %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+<link rel="stylesheet" href="{% static 'all_style.css' %}" />
+<link rel="stylesheet" href="{% static 'sec-inputs.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'center.css' %}" />
+<link rel="stylesheet" href="{% static 'client.css' %}" />
+<style>   
+  :root {
+    --background-image-url: url("/static/images/html_table.png");
+  }
+  .body-div {
+      background: var(--background-image-url) center / cover;
+  }
+  .sidebar-links li.musteriler_li {
+  background: var(--main-color-dark);
+}
+</style>
+
+{% endblock %} {% block title %} Clients {% endblock %} {% block content %}
+<div class="body-div">
+  <div class="window client-add-window">
+    <div class="container">
+      <h3 id="client-X" class="close-window">X</h3>
+      <div class="title">Tedarikci Ekle</div>
+      <form id="client_add_form" action="{% url 'supplier' %}" method="post">
+        {% csrf_token %}
+        <div class="user-details">
+          <div class="input-box" name="CompanyName_Supplier">
+            <span id="firma_adi_span" class="details">Firma Adı*</span>
+            <input
+              name="CompanyName_Clients"
+              id="id_CompanyName_Supplier"
+              type="text"
+            />
+          </div>
+          <div class="input-box" name="ContactPerson">
+            <span class="details">Muhatap</span>
+            <input
+              name="ContactPerson"
+              id="id_ContactPerson_Supplier"
+              type="text"
+            />
+          </div>
+          <div class="input-box" name="PhoneNumber">
+            <span class="details">Telefon</span>
+            <input
+              name="PhoneNumber"
+              id="id_PhoneNumber"
+              type="text"
+              maxlength="15"
+            />
+          </div>
+          <div class="input-box" name="Email">
+            <span class="details">E-posta</span>
+            <input name="Email" id="id_E-mail" type="email" />
+          </div>
+          <div class="input-box" name="Location">
+            <span class="details">Bölge</span>
+            <div class="dropdown-container">
+              <input
+                autocomplete="off"
+                value="{{supplier_edit.Location}}"
+                type="text"
+                id="id_Location"
+                name="Location"
+                class="myInput"
+                placeholder="Bölge Seçiniz"
+                data-dropdown="dropdown1"
+              />
+              <div id="dropdown1" class="dropdown-content">
+                {% for x in locations %}
+                <span value="{{x.Location}}" class="dropdown-item"
+                  >{{x.Location}}</span
+                >
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="button">
+          <input id="kaydet_btn" type="button" value="Kaydet" />
+        </div>
+      </form>
+      {% for error in supplier_form.non_field_errors %}
+      <p style="color: red">hata{{ error }}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% include 'partials/_left_nav_bar.html' %}
+
+  <div class="right-menu">
+    <main class="table" id="customers_table">
+      <section class="table__header">
+        <button style="display: none;" class="hamburger-button"><i class="fa-solid fa-bars"></i></button>
+        <p>MÜŞTERİLER</p>
+        <div class="export__file">
+          <button class="client-add-btn">Müşteri Ekle</button>
+        </div>
+      </section>
+      <section class="table__body">
+        <table id="client_table">
+          <thead>
+            <tr>
+              <th><span></span></th>
+              <th>Firma Adı<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Muhatap<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Telefon<span class="icon-arrow">&UpArrow;</span></th>
+              <th>E-posta<span class="icon-arrow">&UpArrow;</span></th>
+              <th>Bölge<span class="icon-arrow">&UpArrow;</span></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</div>
+{% endblock %} {% block js_files %}
+<script src="{% static 'client.js' %}"></script>
+<script src="{% static 'functions.js' %}"></script>
+
+{% endblock %}
